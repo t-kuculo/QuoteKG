@@ -27,6 +27,37 @@ share/python-wheels/
 *.egg
 MANIFEST
 
+# Data
+embeddings/
+embeddings0/
+embeddings_0/
+embeddings1/
+embeddings_1/
+quotekg/
+quotekg-jsonload-master/
+notebooks/
+statistics/
+jsons/
+v1/
+v2_modified/
+v3_modified/
+v4_modified/
+v5/
+entities_by_language/
+completeQuotes/
+completeQuotes_with_dates/
+completeQuotes_v3/
+completeQuotes_v4/
+final_embeddings/
+corpus/
+is_formatedjson.json
+file.txt
+entity_languages.txt
+all_data.json
+quote.tar.gz
+test.py
+
+
 # PyInstaller
 #  Usually these files are written by a python script from a template
 #  before PyInstaller builds the exe, so as to inject date/other infos into it.
@@ -105,6 +136,7 @@ celerybeat.pid
 .env
 .venv
 env/
+env2/
 venv/
 ENV/
 env.bak/
