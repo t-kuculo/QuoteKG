@@ -1,4 +1,4 @@
-# [QuoteKG](quotekg.l3s.uni-hannover.de)
+# [QuoteKG](http://quotekg.l3s.uni-hannover.de)
 
 This is the code for creating QuoteKG, a multilingual knowledge graph of quotations. QuoteKG includes nearly one million quotes in 52 languages, said by more than 63,000 people of public interest across a wide range of topics.
 
