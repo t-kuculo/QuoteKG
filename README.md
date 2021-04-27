@@ -5,9 +5,14 @@ This is the code for creating QuoteKG, a multilingual knowledge graph of quotati
 ### [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper)
 Use the WikiquoteDumper first to download Wikiquote dumps in any languages and convert them into JSON format.
 
-#### Steps
-* Run WikiquoteDumper to get language specific json files containing all the quotes
-* Run preprocessing.py to separate the json files into files representing people 
-* Run main.py to create the quotation corpus pickle file
-* Run kg_creation to create the knowledge graph triples
-* Run evaluation.py to get the F1 scores for the quote alignments 
+### Steps
+#### Getting the initial data
+* Run [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper) to get language specific json files containing all the quotes
+#### Preprocessing 
+* To separate the json files into files representing people and their quotes run preprocessing.py 
+#### Alignment
+* To create the quotation corpus pickle file run main.py
+#### Knowledge Graph creation
+* To create the knowledge graph triples run kg_creation 
+#### Evaluation
+* To get the F1 scores for the quote alignment run evaluation.py 
