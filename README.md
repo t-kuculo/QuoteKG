@@ -7,14 +7,13 @@ Use the WikiquoteDumper first to download Wikiquote dumps in any languages and c
 
 ### Steps
 Each step produces intermediate files that can be changed with alterations to the parameters.
-
-[comment]: <>  (#### Getting the initial data)
-* Run [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper) to get language specific json files containing all the quotes
+<!-- #### Getting the initial data  --> 
 <!-- #### Preprocessing  --> 
-* To separate the json files into files representing people and their quotes run preprocessing.py 
- <!-- #### Alignment  --> 
-* To create the quotation corpus pickle file run main.py
-<!-- #### Knowledge Graph creation  --> 
-* To create the knowledge graph triples run kg_creation 
 <!-- #### Evaluation  --> 
-* To get the F1 scores for the quote alignment run evaluation.py 
+<!-- #### Alignment  --> 
+<!-- #### Knowledge Graph creation  -->
+* Run [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper) to get language specific json files containing all the quotes
+* To separate the json files into files representing people and their quotes run ```preprocessing.py``` 
+* To create the quotation corpus pickle file run ```main.py```
+* To create the knowledge graph triples run ```kg_creation.py``` 
+* To get the F1 scores for the quote alignment run ```evaluation.py```
