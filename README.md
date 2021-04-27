@@ -7,6 +7,7 @@ Use the WikiquoteDumper first to download Wikiquote dumps in any languages and c
 
 #### Steps
 * Run WikiquoteDumper to get language specific json files containing all the quotes
+* Run preprocessing.py to separate the json files into files representing people 
 * Run main.py to create the quotation corpus pickle file
-* Run xx to create the knowledge graph triples
+* Run kg_creation to create the knowledge graph triples
 * Run evaluation.py to get the F1 scores for the quote alignments 
