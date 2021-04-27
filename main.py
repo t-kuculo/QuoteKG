@@ -67,7 +67,7 @@ def addQuoteAttribute():
                     pickle.dump(new, f)
 
 
-
+"""
 def clusterEmbeddings(completeEntity):
     entities = completeEntity.entities
     X = {}
@@ -85,7 +85,7 @@ def clusterEmbeddings(completeEntity):
             else:
                 X[quote2.id].update({l2:quote2})
     return
-
+"""
 
 def getEmbeddings():
     quotes = {}
@@ -95,10 +95,7 @@ def getEmbeddings():
     print("Getting encodings")
     files = os.listdir(dir)
     for i, filename in enumerate(files):
-        #print(filename)
         print("%d out of %d complete"%(i, len(files)))
-        if i<21000:
-            continue
         with open(dir+"/"+filename,"rb") as f:
             entity=pickle.load(f)
         size = 1024
@@ -156,8 +153,6 @@ if __name__ == "__main__":
                         embs = get_entity_embeddings(all, model)
                         indices = community_detection(embs, threshold = sim, min_community_size=1,init_max_size=len(all))
                         cluster(all, indices, completeEntity)
-    #give_context()
-    #print("Giving dates")
 
         give_better_dates_to_completeQuotes(sim, quote_dir = "/home/kuculo/quotekg/darkhorse/0.8")
         create_corpus("/home/kuculo/quotekg/darkhorse2/",0.8)
