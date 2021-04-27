@@ -4,3 +4,9 @@ This is the code for creating QuoteKG, a multilingual knowledge graph of quotati
 
 ### [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper)
 Use the WikiquoteDumper first to download Wikiquote dumps in any languages and convert them into JSON format.
+
+#### Steps
+* Run WikiquoteDumper to get language specific json files containing all the quotes
+* Run main.py to create the quotation corpus pickle file
+* Run xx to create the knowledge graph triples
+* Run evaluation.py to get the F1 scores for the quote alignments 
