@@ -6,6 +6,7 @@ This is the code for creating QuoteKG, a multilingual knowledge graph of quotati
 Use the WikiquoteDumper first to download Wikiquote dumps in any languages and convert them into JSON format.
 
 ### Steps
+Each step produces intermediate files that can be changed with alterations to the parameters.
 #### Getting the initial data
 * Run [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper) to get language specific json files containing all the quotes
 #### Preprocessing 
