@@ -7,7 +7,7 @@ Use the WikiquoteDumper first to download Wikiquote dumps in any languages and c
 
 ### Steps
 Each step produces intermediate files that can be changed with alterations to the parameters.
-[//]: #  #### Getting the initial data 
+[comment]: <>  (#### Getting the initial data)
 * Run [WikiquoteDumper](https://github.com/sgottsch/WikiquoteDumper) to get language specific json files containing all the quotes
 [//]: #  #### Preprocessing 
 * To separate the json files into files representing people and their quotes run preprocessing.py 
