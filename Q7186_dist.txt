@@ -1,0 +1,79 @@
+
+
+1: Wir dürfen nicht hoffen, eine bessere Welt zu erbauen, ehe nicht die Individuen besser werden. In diesem Sinn soll jeder von uns an seiner eigenen Vervollkommnung arbeiten, indem er auf sich nimmt, was ihm im Lebensganzen der Menschheit an Verantwortlichkeit zukommt, und sich seiner Pflicht bewusst bleibt, denen zu helfen, denen er am ehesten nützlich sein kann.
+2: Marie Curie and the Science of Radioactivity at the American Institute of Physics
+dist: 0.5869022957807047
+sim: 0.41309770421929526
+
+
+
+1: A questo punto, era necessario trovare un nuovo termine per definire questa nuova proprietà della materia, manifestata dagli elementi di uranio e torio. Io proposi la parola radioattività.
+2: We must not forget that when radium was discovered no one knew that it would prove useful in hospitals. The work was one of pure science. And this is a proof that scientific work must not be considered from the point of view of the direct usefulness of it. It must be done for itself, for the beauty of science, and then there is always the chance that a scientific discovery may become like the radium a benefit for humanity.
+dist: 0.5645576222790462
+sim: 0.43544237772095384
+
+
+
+1: Della vita non bisogna temere nulla. Bisogna solo capire.
+2: Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less.
+dist: 0.26900235207978407
+sim: 0.7309976479202159
+
+
+
+1: Ho potuto apprezzare la lucidità della sua mente, l'ampiezza della sua documentazione e la profondità delle sue conoscenze... Ci sono buoni motivi per considerarlo un fisico di grandi speranze e uno dei massimi teorici del futuro.
+2: I am among those who think that science has great beauty. A scientist in his laboratory is not only a technician: he is also a child placed before natural phenomena which impress him like a fairy tale. We should not allow it to be believed that all scientific progress can be reduced to mechanisms, machines, gearings, even though such machinery also has its beauty. 
+Neither do I believe that the spirit of adventure runs any risk of disappearing in our world. If I see anything vital around me, it is precisely that spirit of adventure, which seems indestructible and is akin to curiosity.
+dist: 0.5429075428299993
+sim: 0.4570924571700007
+
+
+
+1: Per detestare l'idea stessa della guerra, basterebbe vedere una volta ciò che io ho visto così spesso durante questi anni: uomini e ragazzi portati nelle ambulanze del fronte, in mezzo al sangue e al fango; molti di loro erano condannati a una morte rapida, altri a mesi di dolori e sofferenze.
+2: Nothing in life is to be feared, it is only to be understood. Now is the time to understand more, so that we may fear less.
+dist: 0.6829149990283208
+sim: 0.31708500097167924
+
+
+
+1: Sono fra coloro che pensano che la scienza abbia una grande bellezza. Uno studioso nel suo laboratorio non è solo un tecnico, è anche un bambino messo di fronte a fenomeni naturali che lo impressionano come una fiaba. Non dobbiamo lasciar credere che ogni progresso scientifico si riduca a dei meccanismi, a delle macchine, degli ingranaggi, che pure hanno anch'essi una loro bellezza. Io non credo che nel nostro mondo lo spirito d'avventura rischi di scomparire. Se vedo attorno a me qualcosa di vitale, è proprio questo spirito d'avventura che mi sembra impossibile da sradicare, e che ha molto in comune con la curiosità.
+2: I am among those who think that science has great beauty. A scientist in his laboratory is not only a technician: he is also a child placed before natural phenomena which impress him like a fairy tale. We should not allow it to be believed that all scientific progress can be reduced to mechanisms, machines, gearings, even though such machinery also has its beauty. 
+Neither do I believe that the spirit of adventure runs any risk of disappearing in our world. If I see anything vital around me, it is precisely that spirit of adventure, which seems indestructible and is akin to curiosity.
+dist: 0.4064417873259749
+sim: 0.5935582126740251
+
+
+
+1: A questo punto, era necessario trovare un nuovo termine per definire questa nuova proprietà della materia, manifestata dagli elementi di uranio e torio. Io proposi la parola radioattività.
+2: Sie müssen ihr Talent entdecken und benutzen. Sie müssen herausfinden, wo ihre Stärke liegt. Haben Sie den Mut, mit ihrem Kopf zu denken. Das wird ihr Selbstvertrauen und ihre Kräfte verdoppeln.
+dist: 0.7046781319494357
+sim: 0.29532186805056426
+
+
+
+1: Della vita non bisogna temere nulla. Bisogna solo capire.
+2: Wir dürfen nicht hoffen, eine bessere Welt zu erbauen, ehe nicht die Individuen besser werden. In diesem Sinn soll jeder von uns an seiner eigenen Vervollkommnung arbeiten, indem er auf sich nimmt, was ihm im Lebensganzen der Menschheit an Verantwortlichkeit zukommt, und sich seiner Pflicht bewusst bleibt, denen zu helfen, denen er am ehesten nützlich sein kann.
+dist: 0.8281191765359356
+sim: 0.17188082346406441
+
+
+
+1: Ho potuto apprezzare la lucidità della sua mente, l'ampiezza della sua documentazione e la profondità delle sue conoscenze... Ci sono buoni motivi per considerarlo un fisico di grandi speranze e uno dei massimi teorici del futuro.
+2: Sie müssen ihr Talent entdecken und benutzen. Sie müssen herausfinden, wo ihre Stärke liegt. Haben Sie den Mut, mit ihrem Kopf zu denken. Das wird ihr Selbstvertrauen und ihre Kräfte verdoppeln.
+dist: 0.7939300829784925
+sim: 0.20606991702150745
+
+
+
+1: Per detestare l'idea stessa della guerra, basterebbe vedere una volta ciò che io ho visto così spesso durante questi anni: uomini e ragazzi portati nelle ambulanze del fronte, in mezzo al sangue e al fango; molti di loro erano condannati a una morte rapida, altri a mesi di dolori e sofferenze.
+2: Sie müssen ihr Talent entdecken und benutzen. Sie müssen herausfinden, wo ihre Stärke liegt. Haben Sie den Mut, mit ihrem Kopf zu denken. Das wird ihr Selbstvertrauen und ihre Kräfte verdoppeln.
+dist: 0.760522078667759
+sim: 0.239477921332241
+
+
+
+1: Sono fra coloro che pensano che la scienza abbia una grande bellezza. Uno studioso nel suo laboratorio non è solo un tecnico, è anche un bambino messo di fronte a fenomeni naturali che lo impressionano come una fiaba. Non dobbiamo lasciar credere che ogni progresso scientifico si riduca a dei meccanismi, a delle macchine, degli ingranaggi, che pure hanno anch'essi una loro bellezza. Io non credo che nel nostro mondo lo spirito d'avventura rischi di scomparire. Se vedo attorno a me qualcosa di vitale, è proprio questo spirito d'avventura che mi sembra impossibile da sradicare, e che ha molto in comune con la curiosità.
+2: Sie müssen ihr Talent entdecken und benutzen. Sie müssen herausfinden, wo ihre Stärke liegt. Haben Sie den Mut, mit ihrem Kopf zu denken. Das wird ihr Selbstvertrauen und ihre Kräfte verdoppeln.
+dist: 0.6915274210868576
+sim: 0.3084725789131424
+
