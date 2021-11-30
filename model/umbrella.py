@@ -24,8 +24,12 @@ class umbrellaQuote:
         self.okay = None
         self.misattributed = None
         self.about = None
+<<<<<<< HEAD
         self.wikiquote_id = None
         self.wikiquote_url = None
+=======
+
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         #templated attributes
 
         self.source = None
@@ -60,8 +64,11 @@ class umbrellaQuote:
         self.isbn = None
         self.archive_date = None
         self.archive_url = None
+<<<<<<< HEAD
 
         #self.n_of_search_results = None
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         
         for attr, value in attributes.items():
             setattr(self, attr, value)

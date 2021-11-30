@@ -1,9 +1,12 @@
 import re
+<<<<<<< HEAD
 from transformers import pipeline
 model_path = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
 sentiment_task = pipeline("sentiment-analysis", model=model_path, tokenizer=model_path)
 
 
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
 pattern_brackets = re.compile(r'\[[^\]]*\]') # https://stackoverflow.com/questions/640001/how-can-i-remove-text-within-parentheses-with-a-regex
 pattern_brackets2 = re.compile(r'\([^\)]*\)')
 
@@ -60,6 +63,7 @@ forbidden_non_alphanumerics_for_context = ["{","}",">","<","@","+","#","&","˛",
 forbidden_non_alphanumerics_for_quotes = forbidden_non_alphanumerics_for_context+["[", "]"]
 
 
+<<<<<<< HEAD
 misattributed_dict = {
     'ar': ['ضعيف', 'متنازع عليه', 'بشكل غير صحيح', 'قائلا نعزى خطأ', 'يعزى خطأ إلى', 'ونقلت تم تعيينها', 'إساءة', 'نعزى بشكل غير صحيح', 'متصل بشكل غير صحيح', 'يعزى بشكل غير صحيح إلى', 'مثيرة للجدل', 'تم تعيينه بشكل غير صحيح', 'تم تعيينه بشكل غير صحيح', 'الفضل بشكل غير صحيح', 'مشكوك فيه', 'سوء المعاملة', 'سيئة', 'خاطئ', 'الفضل بشكل خاطئ', 'لم يتم التحقق منه', 'مرفقة بشكل غير صحيح', 'الفضل بشكل غير صحيح', 'غير صحيح', 'يعزى إلى الخطأ', 'مشبوه أو مشكوك فيه'],\
     'az': ['zəif', 'mübahisəli', 'yanlış', 'yanlış şəkildə aid olduğunu söyləmək', 'səhv yanına aiddir', 'Təyin olunmuş sitatlar', 'yanılsaq', 'səhv aiddir', 'səhv bağlıdır', 'səhv aiddir', 'mübahisəli', 'səhv təyin olunur', 'səhv təyin olunmuşdur', 'səhv hesablanır', 'şübhəli', 'rəfiqə', 'zəif', 'səhv', 'səhv hesablanır', 'təsdiqlənməmiş', 'səhv əlavə olunur', 'səhv hesablanır', 'yanlış', 'səhvən aiddir', 'şübhəli'],\
@@ -109,6 +113,11 @@ misattributed_dict = {
 
 
 misattributed = [f.lower() for l in list(misattributed_dict.values()) for f in l]
+=======
+misattributed = ["misattributed","Nesprávně přisuzováno","disputed",\
+"Thënie të atribuara gabimisht","fälschlich zugeschrieben","zweifelhaft"]
+
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
 about = {"en":"quotes about ","de":"zitate mit bezug auf ","fr":"sur ","it":"citazioni su ", "es":"sobre ","nl":"over ", "pl":"o ",\
 "ru":"Об ","pt":"sobre","be":"Выказванні пра ","uk":"Про ","ca":"citacions sobre ","hu":"róla mondták",\
 "fi":"sanottua","he":"נאמר עליו","fa":"دربارهٔ او","ko":"관련 어록","tr":"Hakkında","sq":"Thënie për të", "ar" : "اقتباسات عن",\
@@ -150,10 +159,13 @@ attrDict = {
     "editor":"editor","year":"year","publisher":"publisher","page":"page","title":"title","ISBN":"isbn", 
     "archive-date":"archive_date","accessdate":"access_date","archive-url":"archive_url","title":"title","archive_date":"achive:date","access-date":"access_date"
 }           
+<<<<<<< HEAD
 
 
 
 
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
 #from googletrans import Translator
 from model.line import *
 #translator = Translator()
@@ -191,10 +203,14 @@ def getDate(section_titles):
     return date
 
 class Context:
+<<<<<<< HEAD
     def __init__(self, sub_line):#, isPl=False):
         #if isPl:
             #self.text = sub_line
         #else:
+=======
+    def __init__(self, sub_line):
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         self.text = sub_line.text
         #[s.text if isinstance(s,Line) else s for s in line.sub_lines]
         self.text = cleanText(self.text, isQuote=False)
@@ -204,14 +220,22 @@ class Context:
         self.external_links = sub_line.external_links
 
 
+<<<<<<< HEAD
 class untemplatedQuote:   
     def __init__(self, section_titles, line, id, n, lang, wikiquote_id):
+=======
+
+
+class untemplatedQuote:   
+    def __init__(self, section_titles, line, id, n, lang):
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         self.id = id+"_"+lang+"_"+str(n)
         self.section_titles = section_titles
         self.section_titles = [cleanText(title, isQuote=False) for title in self.section_titles]
         self.entities = line.links
         self.contexts = []
         self.page_language = lang
+<<<<<<< HEAD
         self.wikiquote_id = wikiquote_id
         self.wikiquote_url = self.page_language+".wikiquote.org/wiki/"+ ("_").join(self.wikiquote_id.split(" "))
         if lang == "pl":
@@ -229,6 +253,11 @@ class untemplatedQuote:
             for sub_line in line.sub_lines:
                 if isinstance(sub_line,Line):
                     self.contexts.append(Context(sub_line))
+=======
+        for sub_line in line.sub_lines:
+            if isinstance(sub_line,Line):
+                self.contexts.append(Context(sub_line))
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         self.footnotes = [s.text if isinstance(s,Line) else s for s in line.footnotes]
         self.external_links = line.external_links
         self.segment_embeddings=[]
@@ -287,9 +316,12 @@ class untemplatedQuote:
         #self.language = (translator.detect(self.quote).lang, translator.detect(self.quote).confidence)
         #translation = translator.translate(self.quote)
         #self.sentiment = sia.polarity_scores(translation.text)
+<<<<<<< HEAD
         if isinstance(self.quote, str):
             if len(self.quote) > 5:
                 self.sentiment = sentiment_task(self.quote[:514])
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         
     def __bool__(self):
         return self.okay and not self.about
@@ -300,15 +332,22 @@ class templatedQuote():
     def __init__(self, *args, **kwargs):
         self.direct_context = None
         self.quote_segments = None
+<<<<<<< HEAD
         #self.wikiquote_source = 
         self.section_titles = args[3]
         self.wikiquote_id = args[4]
+=======
+        self.section_titles = args[3]
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         self.section_titles = [cleanText(title, isQuote=False) for title in self.section_titles]
         self.sentiment = None
         self.date = None
         self.language = None
         self.page_language = args[2]
+<<<<<<< HEAD
         self.wikiquote_url = self.page_language+".wikiquote.org/wiki/"+ ("_").join(self.wikiquote_id.split(" "))
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         self.id = args[0]+"_t_"+args[2]+"_"+str(args[1])
         for key in kwargs:
             if key.lower() in attrDict:
@@ -318,10 +357,14 @@ class templatedQuote():
             self.quote = cleanText(self.quote, isQuote=True)
             if self.quote:
                 if len(self.text) < 6 or any([char for char in self.quote if char in forbidden_non_alphanumerics_for_quotes]):
+<<<<<<< HEAD
                     self.quote = None
                     self.okay = False
             else:
                 self.okay = False
+=======
+                     self.quote=None
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
             if not self.language:
                 try:
                     self.language=detect(self.quote)
@@ -335,9 +378,12 @@ class templatedQuote():
             #self.language = (translator.detect(self.quote).lang, translator.detect(self.quote).confidence)
             #translation = translator.translate(self.quote)
             #self.sentiment = sia.polarity_scores(translation.text)
+<<<<<<< HEAD
             if isinstance(self.quote, str):
                 if len(self.quote) > 5:
                     self.sentiment = sentiment_task(self.quote[:514])
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
             self.about = False
             self.misattributed = False
 
@@ -353,7 +399,11 @@ class templatedQuote():
                 if title.lower() in about_list:
                     self.about = True
 
+<<<<<<< HEAD
             #self.okay = True
+=======
+            self.okay = True
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         except AttributeError:
             self.okay=False
 

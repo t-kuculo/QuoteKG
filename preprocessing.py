@@ -135,10 +135,17 @@ def parseEntity(json_entity_obj):
     return entity
 
 if __name__ == '__main__':
+<<<<<<< HEAD
     target_parent_folder= "/home/kuculo/quotekg/v1_final"
     os.mkdir(target_parent_folder)
     for i, filename in enumerate(os.listdir("jsons")): 
         print("%d file of %d"%(i, len(os.listdir("jsons"))))
+=======
+    target_parent_folder= "/home/kuculo/quotekg/v1"
+    os.mkdir(target_parent_folder)
+    for i, filename in enumerate(os.listdir("../jsons")): 
+        print("%d file of %d"%(i, len(os.listdir("../jsons"))))
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         done=[]
         if filename[8:10] in done or filename[8:11] in done:
                 continue

@@ -11,6 +11,7 @@ from model.quote import *
 languages_with_templates=["fr","da","nl","be","is","ca","bg","da","ka"]
 hybrid_languages = ["uk","ru","sv","et"] + ["ko","fa","cs","fi", "hy"]
 
+<<<<<<< HEAD
 misattributed = {
     'ar': ['ضعيف', 'متنازع عليه', 'بشكل غير صحيح', 'قائلا نعزى خطأ', 'يعزى خطأ إلى', 'ونقلت تم تعيينها', 'إساءة', 'نعزى بشكل غير صحيح', 'متصل بشكل غير صحيح', 'يعزى بشكل غير صحيح إلى', 'مثيرة للجدل', 'تم تعيينه بشكل غير صحيح', 'تم تعيينه بشكل غير صحيح', 'الفضل بشكل غير صحيح', 'مشكوك فيه', 'سوء المعاملة', 'سيئة', 'خاطئ', 'الفضل بشكل خاطئ', 'لم يتم التحقق منه', 'مرفقة بشكل غير صحيح', 'الفضل بشكل غير صحيح', 'غير صحيح', 'يعزى إلى الخطأ', 'مشبوه أو مشكوك فيه'],\
     'az': ['zəif', 'mübahisəli', 'yanlış', 'yanlış şəkildə aid olduğunu söyləmək', 'səhv yanına aiddir', 'Təyin olunmuş sitatlar', 'yanılsaq', 'səhv aiddir', 'səhv bağlıdır', 'səhv aiddir', 'mübahisəli', 'səhv təyin olunur', 'səhv təyin olunmuşdur', 'səhv hesablanır', 'şübhəli', 'rəfiqə', 'zəif', 'səhv', 'səhv hesablanır', 'təsdiqlənməmiş', 'səhv əlavə olunur', 'səhv hesablanır', 'yanlış', 'səhvən aiddir', 'şübhəli'],\
@@ -154,6 +155,26 @@ forbidden = [f.lower() for l in list(forbidden_by_language.values()) for f in l]
 class EntityWithQuotes:
     def __init__(self, entity, id, language):
         def getQuotesFromUnstructuredText(section, id, wikiquote_id):      
+=======
+forbidden = ["filmography","filmografia",\
+"notes","note","примечания","бележки","примітки","ծանոթագրություններ",\
+"footnote","각주","зноскі"\
+"sources","resources","աղբյուրներ","viri","lähteet","منابع","מקורות",\
+"other projects", "altri progetti","iné projekty"\
+"external links","weblinks","eksterne henvisninger", "vanjske poveznice", "ссылки","спасылкі", "εξωτερικοί σύνδεσμοι","välislingid","nuorodos","kanpo loturak","külső hivatkozások","eksterne lenker",\
+"links","legături externe","lidhje të jashtme","tenglar","externí odkazy","الوصلات الخارجية","پیوند به‌بیرون","קישורים חיצוניים","外部链接","外部リンク","बाहरी कडियाँ",\
+"வெளி இணைப்புகள்","Liên kết ngoài","pranala luar","спасылкі","enllaços externs",\
+"see also","véase también", "см. также","zobacz też","shiko edhe","რესურსები ინტერნეტში","ראו גם","see","参见",\
+"bibliography","bibliografia","kaynakça",\
+"related items","voci correlate",\
+"works",\
+"references","referencias","referencoj","istinadlar", "notennoù","referències","referanser","referime","referencie","sklici","حوالہ جات","参考文献", "சான்றுகள்","మూలాలు","daveoù"\
+"literature", "литература", "література"\
+]
+class EntityWithQuotes:
+    def __init__(self, entity, id, language):
+        def necessaryEvil1(section, id):      
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
             def getQ(section, id):
                 nonlocal quotes
                 nonlocal n
@@ -163,7 +184,11 @@ class EntityWithQuotes:
                 section_titles.append(section.title.text)
                 for line in section.lines:
                     n+=1
+<<<<<<< HEAD
                     quote = untemplatedQuote(section_titles, line, id, n, language, wikiquote_id)
+=======
+                    quote = untemplatedQuote(section_titles, line, id, n, language)
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
                     quotes.update({quote.id:quote})
                 for sec in section.sub_sections:
                     if sec.title.text.lower() in forbidden:
@@ -183,7 +208,11 @@ class EntityWithQuotes:
             getQ(section, id)
             return quotes
 
+<<<<<<< HEAD
         def getQuotesFromTemplates(section, id, wikiquote_id):
+=======
+        def necessaryEvil2(section, id):
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
             def getTempQ(section,  id):
                 nonlocal quotes
                 nonlocal n
@@ -194,7 +223,11 @@ class EntityWithQuotes:
                 for template in section.templates:
                     n+=1
                     templ = template.values
+<<<<<<< HEAD
                     quote = templatedQuote(id, n, language, section_titles, wikiquote_id, **templ)
+=======
+                    quote = templatedQuote(id, n, language, section_titles, **templ)
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
                     quotes.update({quote.id:quote})
                 for sec in section.sub_sections:
                     if sec.title.text.lower() in forbidden:
@@ -215,6 +248,7 @@ class EntityWithQuotes:
             getTempQ(section, id)
             return quotes
 
+<<<<<<< HEAD
         self.lang=language
         self.entity = entity
         self.wikiquote_id = entity.wikiquote_id
@@ -227,6 +261,21 @@ class EntityWithQuotes:
             self.quotes.update(getQuotesFromUnstructuredText(entity.main_section, self.id, self.wikiquote_id))
         else:
             self.quotes = getQuotesFromUnstructuredText(entity.main_section, self.id, self.wikiquote_id)
+=======
+
+        self.lang=language
+        self.entity = entity
+        self.id = id
+        self.quotes = dict()
+        n = 0
+        if self.lang in languages_with_templates:
+            self.quotes = necessaryEvil2(entity.main_section, id)
+        elif self.lang in hybrid_languages:
+            self.quotes = necessaryEvil2(entity.main_section, id) 
+            self.quotes.update(necessaryEvil1(entity.main_section, self.id))
+        else:
+            self.quotes = necessaryEvil1(entity.main_section, self.id)
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
 
 class CompleteEntity():
     def __init__(self, id, entities):

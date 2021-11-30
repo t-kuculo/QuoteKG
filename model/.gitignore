@@ -1,6 +1,7 @@
 quotekg-jsonload-master/examples/
 quotekg-jsonload-master/complete/
 quotekg-jsonload-master/withQuotes/
+<<<<<<< HEAD
 Xenv/
 jsons/
 jsons_0/
@@ -16,4 +17,6 @@ v1/
 v1_final/
 v2/
 v2_final/
+=======
+>>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
 env/
