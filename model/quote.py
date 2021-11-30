@@ -164,7 +164,6 @@ from langdetect import detect
 from dateparser import *
 ddp = DateDataParser()
 
-
 #sia = SentimentIntensityAnalyzer()
 def isDate(text):
     X= text.split(" ")
