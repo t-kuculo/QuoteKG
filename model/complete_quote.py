@@ -6,10 +6,7 @@ class CompleteQuote:
         self.quotes = dict()
         self.dates = []
         self.entity = completeEntity
-<<<<<<< HEAD
         self.entity = None # added on 23/11/2021
-=======
->>>>>>> 8e25dd39d45b7ce7368cf03ad5e5959db5fdd5aa
         #self.entity.entities = None
         self.id = quotes[0].id
         for quote in quotes:
