@@ -125,6 +125,7 @@ attrDict = {
     "simple" : "quote",
     "ციტატა" : "quote",
     "original": "original","citation": "translation","précisions": "comment","langue": "language","date":"date","parution":"release","source":"source",
+    "original":"quote", "Original":"quote","Quote":"quote","text":"quote",
 
     "1":"quote", # Make it work when there are more numbers!!
     "2":"quote",
@@ -270,14 +271,14 @@ class untemplatedQuote:
         if self.language:
             if isinstance(self.language,Line):
                 self.language = self.language.text
+
         for title in self.section_titles:
             for x in about_list:
                 if x.lower() in title.lower():
                     self.about = True
             if title.lower() in misattributed:
                 self.misattributed = True
-            if title.lower() in about_list:
-                self.about = True
+
 
         #if self.quote_segments:
             #self.segment_embeddings = [model.encode(segment, device='cuda') for segment in self.quote_segments]
@@ -307,6 +308,8 @@ class templatedQuote():
         self.date = None
         self.language = None
         self.page_language = args[2]
+        self.about = False
+        self.misattributed = False
         self.wikiquote_url = self.page_language+".wikiquote.org/wiki/"+ ("_").join(self.wikiquote_id.split(" "))
         self.id = args[0]+"_t_"+args[2]+"_"+str(args[1])
         for key in kwargs:
@@ -316,17 +319,22 @@ class templatedQuote():
             self.quote = self.quote.text
             self.quote = cleanText(self.quote, isQuote=True)
             if self.quote:
-                if len(self.text) < 6 or any([char for char in self.quote if char in forbidden_non_alphanumerics_for_quotes]):
+                
+                if len(self.quote) < 6 or any([char for char in self.quote if char in forbidden_non_alphanumerics_for_quotes]):
                     self.quote = None
                     self.okay = False
+                else:
+                    self.okay = True
+                    try:
+                        self.language=detect(self.quote)
+                    except langdetect.lang_detect_exception.LangDetectException:
+                        self.language = None
+                        pass
+            elif self.translation or self.original:
+                self.okay = True
             else:
                 self.okay = False
-            if not self.language:
-                try:
-                    self.language=detect(self.quote)
-                except langdetect.lang_detect_exception.LangDetectException:
-                    self.language = None
-                    pass
+                
             self.embedding = None #model.encode(self.quote, device='cuda')
             #if not self.date:
                 #self.date=getDate(self.section_titles)
@@ -343,18 +351,38 @@ class templatedQuote():
             if self.language:
                 if isinstance(self.language,Line):
                     self.language = self.language.text
-            for title in self.section_titles:
-                for x in about_list:
-                    if x.lower() in title.lower():
+            """
+            for x in about_list:
+                for title in self.section_titles:
+                    if title.lower() in x.lower():
                         self.about = True
-                if title.lower() in misattributed:
-                    self.misattributed = True
+            
+            for x in misattributed:
+                for title in self.section_titles:
+                    if title.lower() in misattributed:
+                        self.misattributed = True
                 if title.lower() in about_list:
                     self.about = True
-
+            """ 
             #self.okay = True
         except AttributeError:
-            self.okay=False
+            try:
+                if self.translation:
+                    self.okay = True
+                    if isinstance(self.translation, str):
+                        if len(self.quote) > 5:
+                            self.sentiment = sentiment_task(self.quote[:514])
+
+            except AttributeError:
+                try:
+                    if self.original: 
+                        self.okay = True
+                        if isinstance(self.original, str):
+                            if len(self.quote) > 5:
+                                self.sentiment = sentiment_task(self.quote[:514])
+
+                except AttributeError:          
+                    self.okay=False
 
     def __bool__(self):
         return self.okay and not self.about
@@ -475,6 +503,8 @@ original = "frummál"
 #ca, Template: "Cita"
 quote = "cita"
 original = "original"
+quote = "original"
+quote = "Original"
 date = "data"
 location = "lloc"
 language = "idioma"

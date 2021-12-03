@@ -36,41 +36,11 @@ def getEmbs(completeEntity):
     size = 1024
     #quote_batch, n_of_quotes = get_all_entity_quotes(completeEntity)
     all = []
-    texts = []
-    remember = []
     for language in completeEntity.entities:
         quotes = list(completeEntity.entities[language][0].quotes.values())
         for quote in quotes:
             all.append(quote) 
-    for j, i in enumerate(all):
-        if hasattr(i, "quote"):
-            if hasattr(i.quote, "text"):
-                texts.append(i.quote.text)
-            else:
-                texts.append(i.quote)
-        elif hasattr(i, "original"):
-            if hasattr(i.original, "text"):
-                texts.append(i.original.text)
-            else:
-                texts.append(i.original)
-        elif hasattr(i, "translation"):
-            if hasattr(i.translation, "text"):
-                texts.append(i.translation.text)
-            else:
-                texts.append(i.translation)
-        else:
-            # if we somehow got a quote object without quote, orginal or translation attribute. We want to delete it from the list
-            remember.append(j)
-            inv_map = {v: k for k, v in completeEntity.entitiesitems()}
-            for language in completeEntity.entities:
-                if j > len(list(completeEntity.entities[language][0].quotes.values())):
-                    j = j - len(list(completeEntity.entities[language][0].quotes.values()))
-                else:
-                    inv_map = {v: k for k, v in completeEntity.entities[language][0].quotes.items()}
-                    key = inv_map[i]
-                    del completeEntity.entities[language][0].quotes[key]           
-    for index in sorted(remember, reverse=True):
-        del all[index]
+    texts = [i.quote for i in all]
     #quotes.update(quote_batch)
     #if list(quotes.values()) == []:
     if all == []:
@@ -167,11 +137,11 @@ def X(intermediate_done=False):
     d ={}
     dir = "/home/kuculo/quotekg/v1_final"
     subdirs = [x[0] for x in os.walk(dir)][1:] 
-    subdirs = ["/home/kuculo/quotekg/v1_final/it", "/home/kuculo/quotekg/v1_final/en"]
+    subdirs = ["/home/kuculo/quotekg/v1_final/ru","/home/kuculo/quotekg/v1_final/es","/home/kuculo/quotekg/v1_final/fa","/home/kuculo/quotekg/v1_final/bg","/home/kuculo/quotekg/v1_final/de","/home/kuculo/quotekg/v1_final/he","/home/kuculo/quotekg/v1_final/zh","/home/kuculo/quotekg/v1_final/bs","/home/kuculo/quotekg/v1_final/ar"]
     print("v2:")  
     if not os.path.isdir("/home/kuculo/quotekg/v2_final"):
-        os.mkdir("/home/kuculo/quotekg/v2_final")                                                                          
-    if not intermediate_done:
+        os.mkdir("/home/kuculo/quotekg/v2_final") 
+    if not intermediate_done:                                                                         
         for i, subdir in enumerate(subdirs):
             print(subdir)
             print("%d of %d complete"%(i, len(subdirs)))  
@@ -206,8 +176,6 @@ def X(intermediate_done=False):
             language = subdir.split("/")[-1]
             for root,dirs,files in os.walk(subdir):
                 for j, filename in enumerate(files):
-                    if filename != "Q7251.pkl":
-                        continue
                     if j%100==0:
                         print("%d file out of %d"%(j, len(files)))
                     if "counter" in filename:

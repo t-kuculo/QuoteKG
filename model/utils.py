@@ -76,6 +76,8 @@ def get_all_entity_quotes(entity):
                     batch_of_quotes[quote.id]=quote.quote.lower()
     return batch_of_quotes, n_of_quotes
 
+
+
 def checkQuotes(completeEntity, counter):
     entities = completeEntity.entities
     for lang in entities:

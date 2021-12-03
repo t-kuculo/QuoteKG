@@ -15,7 +15,9 @@ v2/
 v2_final/
 __pycache__/
 jsons/
+/jsons
 jsons_0/
+/jsons_0
 test/
 
 /intermediate
@@ -34,3 +36,5 @@ test/
 /v2
 /v2_final
 /__pycache__
+corpus_current/
+/corpus_current

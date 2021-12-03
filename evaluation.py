@@ -1,4 +1,6 @@
 import pickle
+
+from networkx.algorithms.centrality.current_flow_betweenness import edge_current_flow_betweenness_centrality
 from model.entity_quotes import *
 from model.complete_quote import *
 from model.utils import *
@@ -7,8 +9,8 @@ from itertools import *
 our_languages = ["en", "it", "de"]
 our_languages.reverse()
 
-folder = "evaluation/ground_truth"
-corpus_filename = "corpus_evaluation_fast_0.8.pkl"
+folder = "data/ground_truth"
+corpus_filename = "corpus/corpus_v2.pkl"
 
 ground_truth = dict()
 clusters = dict()
@@ -76,15 +78,23 @@ with open(corpus_filename, "rb") as f:
 # load quotation clusters from our data
 for completeQuote in corpus.completeQuotes.values():
 
-    completeEntity = completeQuote.entity
+    #completeEntity = completeQuote.entity
 
-    wikidata_id = completeEntity.wikidata_id
+    #wikidata_id = completeEntity.wikidata_id
+    wikidata_id = completeQuote.id.split("_")[0]
     if wikidata_id not in ground_truth.keys():
         continue
 
     quote_texts = set()
+    if "en" in completeQuote.quotes.keys() or "de" in completeQuote.quotes.keys() or "it" in completeQuote.quotes.keys():
+        print("###")
+        if len(completeQuote.quotes.keys() > 1):
+            for lang, quotes in completeQuote.quotes.items():
+                for quote in quotes:
+                    print(lang,quote)
+            print("###")
     for lang, quotes in completeQuote.quotes.items():
-
+        
         for quote in quotes:
 
             if lang not in our_languages:
@@ -98,6 +108,9 @@ for completeQuote in corpus.completeQuotes.values():
                     clusters[wikidata_id]["all"].add(quote_text)
 
                 quote_texts.add(quote_text)
+            #else:
+                #print("$$$")
+                #print(quote_text)
 
     for text1 in quote_texts:
         for text2 in quote_texts:

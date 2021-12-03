@@ -26,6 +26,7 @@ class umbrellaQuote:
         self.about = None
         self.wikiquote_id = None
         self.wikiquote_url = None
+        self.sentiment = None
         #templated attributes
 
         self.source = None
