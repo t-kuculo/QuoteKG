@@ -3,10 +3,10 @@ import os
 import numpy
 from collections import Counter
 import collections
-from pathlib import Path
 from model.entity_quotes import *
 from model.complete_quote import *
 from model.utils import *
+from pathlib import Path
 from itertools import * 
 from sentence_transformers import SentenceTransformer
 from scipy.spatial import distance
@@ -220,9 +220,9 @@ def X(intermediate_done=False):
                             d[filename].update({language:[]})
                             d[filename][language].append(entity)
     print("Creating CompleteEntities and embedding quotes")
-    #od = collections.OrderedDict(sorted(d.items())[10000:15000])
-    od = collections.OrderedDict(sorted(d.items())[35000:40000])
-    # od = collections.OrderedDict(sorted(d.items())[60000:65000])
+    #od = collections.OrderedDict(sorted(d.items())[20000:25000])
+    od = collections.OrderedDict(sorted(d.items())[45000:50000])
+    # od = collections.OrderedDict(sorted(d.items())[70000:])
     d = None
     for i, filename in enumerate(od):
         print("%d of %d complete"%(i, len(od))) 
@@ -367,5 +367,6 @@ if __name__ == "__main__":
     create_corpus("/home/kuculo/quotekg/CompleteQuotes2/"+str(sim))
     print("Creating umbrella corpus")
     convert_to_umbrella_corpus()
+
 
 

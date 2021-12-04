@@ -8,6 +8,7 @@
 #main_section > title > line > text
 from transformers.models.auto import configuration_auto
 from model.quote import *
+import collections
 
 languages_with_templates=["fr","da","nl","be","is","ca","bg","da","ka"]
 hybrid_languages = ["uk","ru","sv","et"] + ["ko","fa","cs","fi", "hy"]
@@ -219,6 +220,10 @@ class EntityWithQuotes:
         self.lang=language
         self.entity = entity
         self.wikiquote_id = entity.wikiquote_id
+        self.wikiquote_page_id = entity.wikiquotePageId
+        self.wikidata_id = entity.wikidata_id
+        self.wikipedia_id = entity.wikipedia_id
+        self.types = []
         self.id = id
         self.quotes = dict()
         if self.lang in languages_with_templates:
@@ -228,6 +233,7 @@ class EntityWithQuotes:
             self.quotes.update(getQuotesFromUnstructuredText(entity.main_section, self.id, self.wikiquote_id))
         else:
             self.quotes = getQuotesFromUnstructuredText(entity.main_section, self.id, self.wikiquote_id)
+        self.quotes = collections.OrderedDict(sorted(self.quotes.items()))
 
 class CompleteEntity():
     def __init__(self, id, entities):

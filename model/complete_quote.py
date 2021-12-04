@@ -6,8 +6,8 @@ class CompleteQuote:
         self.quotes = dict()
         self.dates = []
         self.entity = completeEntity
-        self.entity.main_section = None # added on 3/12/2021
-        self.entity = None # added on 23/11/2021
+        self.entity.entities = None # added on 4/12/2021
+        #self.entity = None # added on 23/11/2021
         #self.entity.entities = None
         self.id = quotes[0].id
         for quote in quotes:

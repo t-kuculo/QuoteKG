@@ -2,10 +2,12 @@ import pickle
 import os
 import numpy
 from collections import Counter
+import collections
 from model.entity_quotes import *
 from model.complete_quote import *
 from model.utils import *
 from itertools import * 
+from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from scipy.spatial import distance
 from model.fast_clustering import community_detection
@@ -31,6 +33,9 @@ def getq(e):
     return all
 
 def getEmbs(completeEntity):
+    """
+    Maybe make all the dicts ordered?
+    """
     quotes = {}
     embeddings = {} 
     size = 1024
@@ -206,8 +211,6 @@ def X(intermediate_done=False):
             language = subdir.split("/")[-1]
             for root,dirs,files in os.walk(subdir):
                 for j, filename in enumerate(files):
-                    if filename != "Q7251.pkl":
-                        continue
                     if j%100==0:
                         print("%d file out of %d"%(j, len(files)))
                     if "counter" in filename:
@@ -220,11 +223,20 @@ def X(intermediate_done=False):
                             d[filename].update({language:[]})
                             d[filename][language].append(entity)
     print("Creating CompleteEntities and embedding quotes")
-    for i, filename in enumerate(d):
-        print("%d of %d complete"%(i, len(d))) 
+    #multiprocessing
+    # od = collections.OrderedDict(sorted(d.items())[:5000])
+    od = collections.OrderedDict(sorted(d.items())[25000:30000])
+    # od = collections.OrderedDict(sorted(d.items())[50000:55000])
+    d = None
+    for i, filename in enumerate(od):
+        print("%d of %d complete"%(i, len(od))) 
+        path = "/home/kuculo/quotekg/v2_final/"+filename
+        path = Path(path)
+        if path.exists():
+            continue
         print(filename)
         with open("/home/kuculo/quotekg/v2_final/"+filename,"wb") as f:
-            new = CompleteEntity(filename[:-4], d[filename])
+            new = CompleteEntity(filename[:-4], od[filename])
             new = getEmbs(new)
             pickle.dump(new, f)
       
@@ -318,11 +330,14 @@ def smallTest2():
             print(quote.embedding)
 
 if __name__ == "__main__":
-    X()
+    X(intermediate_done=True)
+    while(True):
+        print("embedding completed")
     entity_dir = "/home/kuculo/quotekg/v2_final/"
     #subdirs = [x[0] for x in os.walk(entity_dir)][1:]  
     sim = 0.8
-    
+    print("Embeddings created")
+    print("Clustering")
     for root,dirs,files in os.walk(entity_dir):
         for z, filename in enumerate(files):
             with open(entity_dir+"/"+filename,"rb") as f:
