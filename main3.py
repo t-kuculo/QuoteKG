@@ -3,11 +3,11 @@ import os
 import numpy
 from collections import Counter
 import collections
-from pathlib import Path
 from model.entity_quotes import *
 from model.complete_quote import *
 from model.utils import *
 from itertools import * 
+from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from scipy.spatial import distance
 from model.fast_clustering import community_detection
@@ -31,73 +31,23 @@ def getq(e):
         for quote in quotes:
             all.append(quote) 
     return all
-
-def getEmbs(completeEntity):
-    quotes = {}
-    embeddings = {} 
-    size = 1024
-    #quote_batch, n_of_quotes = get_all_entity_quotes(completeEntity)
-    all = []
-    texts = []
-    remember = []
-    for language in completeEntity.entities:
-        quotes = list(completeEntity.entities[language][0].quotes.values())
-        for quote in quotes:
-            all.append(quote) 
-    for j, i in enumerate(all):
-        if hasattr(i, "quote"):
-            if hasattr(i.quote, "text"):
-                texts.append(i.quote.text)
+def clusterEmbeddings(completeEntity):
+    entities = completeEntity.entities
+    X = {}
+    for l1, l2 in combinations(entities, 2):
+        e1 = entities[l1][0]
+        e2 = entities[l2][0]
+        quotes1, quotes2 = e1.quotes, e2.quotes
+        for quote1, quote2 in list(product(quotes1,quotes2)):
+            if quote1.id not in X and quote2.id not in X:
+                X[quote1.id].update({l1:quote1})
+            embeddings = model.encode([quote1.quote, quote2.quote])
+            similarity = 1 - distance.cosine(embeddings[0],embeddings[1])
+            if similarity > 0.5:
+                X[quote1.id][l2]=quote2
             else:
-                texts.append(i.quote)
-        elif hasattr(i, "original"):
-            if hasattr(i.original, "text"):
-                texts.append(i.original.text)
-            else:
-                texts.append(i.original)
-        elif hasattr(i, "translation"):
-            if hasattr(i.translation, "text"):
-                texts.append(i.translation.text)
-            else:
-                texts.append(i.translation)
-        else:
-            # if we somehow got a quote object without quote, orginal or translation attribute. We want to delete it from the list
-            remember.append(j)
-            inv_map = {v: k for k, v in completeEntity.entitiesitems()}
-            for language in completeEntity.entities:
-                if j > len(list(completeEntity.entities[language][0].quotes.values())):
-                    j = j - len(list(completeEntity.entities[language][0].quotes.values()))
-                else:
-                    inv_map = {v: k for k, v in completeEntity.entities[language][0].quotes.items()}
-                    key = inv_map[i]
-                    del completeEntity.entities[language][0].quotes[key]           
-    for index in sorted(remember, reverse=True):
-        del all[index]
-    #quotes.update(quote_batch)
-    #if list(quotes.values()) == []:
-    if all == []:
-        print(completeEntity.wikidata_id)
-        return completeEntity
-    gc.collect()
-    torch.cuda.empty_cache()
-    with torch.no_grad():
-        if len(all)>2000:
-            #changed order of d1/d2
-            d1 = texts[:len(texts)//2]
-            d2 = texts[len(texts)//2:]                                 
-            e1 = model.encode(d1)
-            e2 = model.encode(d2)
-            values = numpy.concatenate((e1,e2))
-        else:
-            values = model.encode(texts)
-        n=0
-        for language in completeEntity.entities:
-            #for quote in list(completeEntity.entities[language][0].quotes.values()):
-            for quote_id, value in zip(completeEntity.entities[language][0].quotes, values[n:]):
-                completeEntity.entities[language][0].quotes[quote_id].embedding = value
-                n+=1
-    return completeEntity
-
+                X[quote2.id].update({l2:quote2})
+    return
 def createEntityDicts():
     d ={}
     dir = "/home/kuculo/quotekg/v2"
@@ -120,7 +70,6 @@ def createEntityDicts():
         with open("/home/kuculo/quotekg/v3/"+entity,"wb") as f:
             new = CompleteEntity(entity[:-4], d[entity])
             pickle.dump(new, f) 
-
 def addQuoteAttribute():
     dir = "/home/kuculo/quotekg/v1"
     subdirs = [x[0] for x in os.walk(dir)][1:] 
@@ -149,111 +98,35 @@ def addQuoteAttribute():
                     id = filename[:-4]
                     new = EntityWithQuotes(entity,id,language)
                     pickle.dump(new, f)
-"""
-subdir = "/home/kuculo/quotekg/v1_final/en"
-some = []
-for root,dirs,files in os.walk(subdir):
-    for j, filename in enumerate(files):
-        print("%d of %d"%(j, len(files)))
-        with open(subdir+"/"+filename,"rb") as f:
-            entity=pickle.load(f)
-            id = filename[:-4]
-            new = EntityWithQuotes(entity,id,"en")
-            quotes = list(new.quotes.values())
-            t1 = [quote.section_titles for quote in quotes]
-            titles = list(set([title for x in t1 for title in x]))
-            if "external links" in titles or "External links" in titles:
-                break
-"""
-def X(intermediate_done=False):
-    d ={}
-    dir = "/home/kuculo/quotekg/v1_final"
-    subdirs = [x[0] for x in os.walk(dir)][1:] 
-    subdirs = ["/home/kuculo/quotekg/v1_final/it", "/home/kuculo/quotekg/v1_final/en"]
-    print("v2:")  
-    if not os.path.isdir("/home/kuculo/quotekg/v2_final"):
-        os.mkdir("/home/kuculo/quotekg/v2_final")                                                                          
-    if not intermediate_done:
-        for i, subdir in enumerate(subdirs):
-            print(subdir)
-            print("%d of %d complete"%(i, len(subdirs)))  
-            language= subdir.split("/")[-1]
-            new_dir="/home/kuculo/quotekg/v2_final/"+language
-            if os.path.isdir(new_dir):
-                continue
-            else:
-                os.mkdir(new_dir)
-            for root,dirs,files in os.walk(subdir):
-                for j, filename in enumerate(files):
-                    if j%100==0:
-                        print("%d file out of %d"%(j, len(files)))
-                    if "counter" in filename:
-                        continue
-                    with open(subdir+"/"+filename,"rb") as f:
-                        entity=pickle.load(f)
-                        id = filename[:-4]
-                        new = EntityWithQuotes(entity,id,language)
-                        if not os.path.isdir("/home/kuculo/quotekg/intermediate/"+ language):      
-                            os.mkdir("/home/kuculo/quotekg/intermediate/"+ language)
-                        with open("/home/kuculo/quotekg/intermediate/"+ language+"/"+filename,"wb") as g:
-                            pickle.dump(new, g)
-                        if filename not in d:
-                            d[filename] = {}
-                        if language not in d[filename]:
-                            d[filename].update({language:[]})
-                            d[filename][language].append(new)
-    else:
-        subdirs = [x[0] for x in os.walk("/home/kuculo/quotekg/intermediate/")][1:] 
-        for i, subdir in enumerate(subdirs):
-            language = subdir.split("/")[-1]
-            for root,dirs,files in os.walk(subdir):
-                for j, filename in enumerate(files):
-                    if j%100==0:
-                        print("%d file out of %d"%(j, len(files)))
-                    if "counter" in filename:
-                        continue
-                    with open(subdir+"/"+filename,"rb") as f:
-                        entity=pickle.load(f)
-                        if filename not in d:
-                            d[filename] = {}
-                        if language not in d[filename]:
-                            d[filename].update({language:[]})
-                            d[filename][language].append(entity)
-    print("Creating CompleteEntities and embedding quotes")
-    #od = collections.OrderedDict(sorted(d.items())[10000:15000])
-    od = collections.OrderedDict(sorted(d.items())[35000:40000])
-    # od = collections.OrderedDict(sorted(d.items())[60000:65000])
-    d = None
-    for i, filename in enumerate(od):
-        print("%d of %d complete"%(i, len(od))) 
-        path = "/home/kuculo/quotekg/v2_final/"+filename
-        path = Path(path)
-        if path.exists():
-            continue
-        print(filename)
-        with open("/home/kuculo/quotekg/v2_final/"+filename,"wb") as f:
-            new = CompleteEntity(filename[:-4], od[filename])
-            new = getEmbs(new)
-            pickle.dump(new, f)
-      
-def clusterEmbeddings(completeEntity):
-    entities = completeEntity.entities
-    X = {}
-    for l1, l2 in combinations(entities, 2):
-        e1 = entities[l1][0]
-        e2 = entities[l2][0]
-        quotes1, quotes2 = e1.quotes, e2.quotes
-        for quote1, quote2 in list(product(quotes1,quotes2)):
-            if quote1.id not in X and quote2.id not in X:
-                X[quote1.id].update({l1:quote1})
-            embeddings = model.encode([quote1.quote, quote2.quote])
-            similarity = 1 - distance.cosine(embeddings[0],embeddings[1])
-            if similarity > 0.5:
-                X[quote1.id][l2]=quote2
-            else:
-                X[quote2.id].update({l2:quote2})
-    return
-
+def smallTest():
+    dir = "/home/kuculo/quotekg/v1"
+    subdirs = [x[0] for x in os.walk(dir)][1:]                                                                          
+    for i, subdir in enumerate(subdirs):
+        language= subdir.split("/")[-1]
+        for root,dirs,files in os.walk(subdir):
+            for filename in files:
+                #if "Q16721538" not in filename:
+                if "Q3836804" not in filename:
+                    continue
+                with open(subdir+"/"+filename,"rb") as f:
+                    entity=pickle.load(f)
+                id = filename[:-4]
+                new = EntityWithQuotes(entity,id,language)
+                #new.entity.print()
+                print("$$$$")
+                print(new.quotes)
+                for quote in new.quotes.values():
+                    print(quote.quote)
+                    print(quote.embedding)
+def smallTest2():
+    with open("/home/kuculo/quotekg/v4/Q3836804.pkl","rb") as f:
+        entity=pickle.load(f)
+    print("$$$$")
+    print(entity.entities)
+    for language in entity.entities:
+        for quote in language[0].quotes.values():
+            print(quote.quote) 
+            print(quote.embedding)
 def getEmbeddings():
     quotes = {}
     embeddings = {} 
@@ -294,36 +167,154 @@ def getEmbeddings():
                 with open(new_dir+key+".pkl","wb") as f:
                     pickle.dump(value, f)
 
-def smallTest():
-    dir = "/home/kuculo/quotekg/v1"
-    subdirs = [x[0] for x in os.walk(dir)][1:]                                                                          
-    for i, subdir in enumerate(subdirs):
-        language= subdir.split("/")[-1]
-        for root,dirs,files in os.walk(subdir):
-            for filename in files:
-                #if "Q16721538" not in filename:
-                if "Q3836804" not in filename:
-                    continue
-                with open(subdir+"/"+filename,"rb") as f:
-                    entity=pickle.load(f)
-                id = filename[:-4]
-                new = EntityWithQuotes(entity,id,language)
-                #new.entity.print()
-                print("$$$$")
-                print(new.quotes)
-                for quote in new.quotes.values():
-                    print(quote.quote)
-                    print(quote.embedding)
 
-def smallTest2():
-    with open("/home/kuculo/quotekg/v4/Q3836804.pkl","rb") as f:
-        entity=pickle.load(f)
-    print("$$$$")
-    print(entity.entities)
-    for language in entity.entities:
-        for quote in language[0].quotes.values():
-            print(quote.quote) 
-            print(quote.embedding)
+def getEmbs(completeEntity):
+    """
+    Maybe make all the dicts ordered?
+    """
+    quotes = {}
+    size = 1024
+    # all = []
+    all = {}
+    texts = []
+    remember = []
+    for language in completeEntity.entities:
+        quotes = list(completeEntity.entities[language][0].quotes.values())
+        for quote in quotes:
+            all.update({quote.id : quote})
+            #all.append(quote) 
+
+    for j, i in enumerate(all.values()):
+        if hasattr(i, "quote"):
+            if hasattr(i.quote, "text"):
+                texts.append(i.quote.text)
+            else:
+                texts.append(i.quote)
+        elif hasattr(i, "original"):
+            if hasattr(i.original, "text"):
+                texts.append(i.original.text)
+            else:
+                texts.append(i.original)
+        elif hasattr(i, "translation"):
+            if hasattr(i.translation, "text"):
+                texts.append(i.translation.text)
+            else:
+                texts.append(i.translation)
+        else:
+            # if we somehow got a quote object without quote, orginal or translation attribute. We want to delete it from the list
+            remember.append(j)
+            inv_map = {v: k for k, v in completeEntity.entitiesitems()}
+            for language in completeEntity.entities:
+                if j > len(list(completeEntity.entities[language][0].quotes.values())):
+                    j = j - len(list(completeEntity.entities[language][0].quotes.values()))
+                else:
+                    inv_map = {v: k for k, v in completeEntity.entities[language][0].quotes.items()}
+                    key = inv_map[i]
+                    del completeEntity.entities[language][0].quotes[key]     
+
+    for index in sorted(remember, reverse=True):
+        del all[index]
+
+    if all == []:
+        print(completeEntity.wikidata_id)
+        return completeEntity
+
+    gc.collect()
+    torch.cuda.empty_cache()
+    with torch.no_grad():
+        if len(all)>2000:
+            #changed order of d1/d2
+            d1 = texts[:len(texts)//2]
+            d2 = texts[len(texts)//2:]                                 
+            e1 = model.encode(d1)
+            e2 = model.encode(d2)
+            values = numpy.concatenate((e1,e2))
+        else:
+            values = model.encode(texts)
+
+    for quote_id, embedding in zip(all, values):
+        for language in completeEntity.entities:
+            completeEntity.entities[language][0].quotes[quote_id] = embedding
+        """
+        n=0
+        for language in completeEntity.entities:
+            #for quote in list(completeEntity.entities[language][0].quotes.values()):
+            for quote_id, value in zip(completeEntity.entities[language][0].quotes, values[n:]):
+                completeEntity.entities[language][0].quotes[quote_id].embedding = value
+                n+=1
+        """
+    return completeEntity
+
+def X(intermediate_done=False):
+    d ={}
+    dir = "/home/kuculo/quotekg/v1_final"
+    subdirs = [x[0] for x in os.walk(dir)][1:] 
+    subdirs = ["/home/kuculo/quotekg/v1_final/it", "/home/kuculo/quotekg/v1_final/en"]
+    print("v2:")  
+    if not os.path.isdir("/home/kuculo/quotekg/v2_final"):
+        os.mkdir("/home/kuculo/quotekg/v2_final")                                                                          
+    if not intermediate_done:
+        for i, subdir in enumerate(subdirs):
+            print(subdir)
+            print("%d of %d complete"%(i, len(subdirs)))  
+            language= subdir.split("/")[-1]
+            new_dir="/home/kuculo/quotekg/v2_final/"+language
+            if os.path.isdir(new_dir):
+                continue
+            else:
+                os.mkdir(new_dir)
+            for root,dirs,files in os.walk(subdir):
+                for j, filename in enumerate(files):
+                    if j%100==0:
+                        print("%d file out of %d"%(j, len(files)))
+                    if "counter" in filename:
+                        continue
+                    with open(subdir+"/"+filename,"rb") as f:
+                        entity=pickle.load(f)
+                        id = filename[:-4]
+                        new = EntityWithQuotes(entity,id,language)
+                        if not os.path.isdir("/home/kuculo/quotekg/intermediate/"+ language):      
+                            os.mkdir("/home/kuculo/quotekg/intermediate/"+ language)
+                        with open("/home/kuculo/quotekg/intermediate/"+ language+"/"+filename,"wb") as g:
+                            pickle.dump(new, g)
+                        if filename not in d:
+                            d[filename] = {}
+                        if language not in d[filename]:
+                            d[filename].update({language:[]})
+                            d[filename][language].append(new)
+    else:
+        for (s,e) in [(10000, 15000),(35000,40000),(60000,65000)]:
+            subdirs = [x[0] for x in os.walk("/home/kuculo/quotekg/intermediate/")][1:] 
+            for i, subdir in enumerate(subdirs):
+                language = subdir.split("/")[-1]
+                for root,dirs,files in os.walk(subdir):
+                    for j, filename in enumerate(files):
+                        if j%100==0:
+                            print("%d file out of %d"%(j, len(files)))
+                        if "counter" in filename:
+                            continue
+                        with open(subdir+"/"+filename,"rb") as f:
+                            entity=pickle.load(f)
+                            if filename not in d:
+                                d[filename] = {}
+                            if language not in d[filename]:
+                                d[filename].update({language:[]})
+                                d[filename][language].append(entity)
+            print("Creating CompleteEntities and embedding quotes")
+            od = collections.OrderedDict(sorted(d.items())[s:e])
+            d = {}
+            for i, filename in enumerate(od):
+                print("%d of %d complete"%(i, len(od))) 
+                path = "/home/kuculo/quotekg/v2_final/"+filename
+                path = Path(path)
+                if path.exists():
+                    continue
+                print(filename)
+                with open("/home/kuculo/quotekg/v2_final/"+filename,"wb") as f:
+                    new = CompleteEntity(filename[:-4], od[filename])
+                    new = getEmbs(new)
+                    pickle.dump(new, f)
+        
 
 if __name__ == "__main__":
     X(intermediate_done=True)

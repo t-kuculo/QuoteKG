@@ -11,6 +11,70 @@ from sklearn.neighbors import BallTree
 import networkx 
 from networkx.algorithms.components.connected import connected_components
 from model.date_parsing_with_period import * 
+from sentence_transformers import SentenceTransformer
+from scipy.spatial import distance
+from model.fast_clustering import community_detection
+import numpy
+import gc
+model = SentenceTransformer('paraphrase-xlm-r-multilingual-v1', device='cuda')
+
+
+def recluster():
+    with open("/home/kuculo/quotekg/corpus/corpus_v2.pkl", "rb") as f:
+        corpus = pickle.load(f)
+    ids = sorted(corpus.all_ids)
+    texts = []
+    for z, id in enumerate(ids):
+        if z%1000==0:
+            print("%d out of %d done reclustering"%(z, len(ids)))
+        quotes = lookUp(corpus, id)
+        for quote in quotes:
+            if hasattr(quote, "quote"):
+                if hasattr(quote.quote, "text"):
+                    texts.append(quote.quote.text)
+                else:
+                    texts.append(quote.quote)
+            elif hasattr(quote, "original"):
+                if hasattr(quote.original, "text"):
+                    texts.append(quote.original.text)
+                else:
+                    texts.append(quote.original)
+            elif hasattr(quote, "translation"):
+                if hasattr(quote.translation, "text"):
+                    texts.append(quote.translation.text)
+                else:
+                    texts.append(quote.translation)
+        gc.collect()
+        torch.cuda.empty_cache()
+        with torch.no_grad():
+            if len(texts)>2000:                            
+                e1 = model.encode(texts[:len(texts)//2])
+                e2 = model.encode(texts[len(texts)//2:] )
+                values = numpy.concatenate((e1,e2))
+            else:
+                values = model.encode(texts)
+                    
+        indices = community_detection(values, threshold = 0.8, min_community_size=1,init_max_size=len(texts))
+        new_indices = indices
+        # split up bias towards same language
+        for g, quote_cluster in enumerate(indices):
+            temp = []
+            if len(quote_cluster)<2:
+                continue
+            else:
+                for idx in quote_cluster:
+                    temp.append(quotes[idx].page_language)
+                if len(list(set(temp))) == 1:
+                    new_indices = new_indices[:g] + [[t] for t in new_indices[g]] + new_indices[g+1:]
+        indices = new_indices
+        for index_cluster in indices:
+            tmp = []
+            for idx in index_cluster:
+                tmp.append(quotes[idx])
+            corpus.completeQuotes[id] = CompleteQuote(tmp)
+    with open("/home/kuculo/quotekg/corpus/final.pkl", "wb") as f:
+        pickle.dump(corpus, f)
+
 
 def cluster(quotes, indices, completeEntity, path):
     for cluster in indices:
@@ -210,7 +274,12 @@ def getDates(completeQuote):
             section_titles = quote.section_titles  
             page_language = quote.page_language
             date1 = getDate(section_titles,page_language)
-            date2 = getDateFromContext(quote.quote)
+            if hasattr(quote, "quote"):
+                date2 = getDateFromContext(quote.quote)
+            elif hasattr(quote,"translation"):
+                date2 = getDateFromContext(quote.translation)
+            elif hasattr(quote, "original"):
+                date2 = getDateFromContext(quote.original)
             if date1 and date2:
                 if len(date1) == len(date2):
                     quote.date = date1
@@ -332,7 +401,9 @@ def convert_to_umbrella_corpus():
     output = "/home/kuculo/quotekg/corpus/corpus_v2.pkl"
     with open(corpus_file,"rb") as f:
         corpus = pickle.load(f)
-    for id in corpus.completeQuotes:
+    for i, id in enumerate(corpus.completeQuotes):
+        if i%1000==0:
+            print("%d out %d converted"%(i, len(corpus.completeQuotes)))
         new_quotes.update({id:change_to_umbrella_quotes(corpus.completeQuotes[id])})
     corpus.completeQuotes = new_quotes
     """

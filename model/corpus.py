@@ -14,15 +14,14 @@ class Corpus:
     def lookUp(self, wd_id, printout=False):
         quotesById = []
         for quote_id in self.completeQuotes:
-            if wd_id != quote_id.split("_")[0]:
+            if wd_id == quote_id.split("_")[0]:
                 quotesById.append(self.completeQuotes[quote_id])
         if printout:
             for completeQuote in quotesById:
                 print([quote.quote for quote in list(completeQuote.quotes.values())[0]])
                 print("###\n")
-            return quotesById
-        else:
-            return quotesById
+        return quotesById
+
 
 
 def lookUp(c, wd_id, printout=False):
@@ -34,6 +33,5 @@ def lookUp(c, wd_id, printout=False):
         for completeQuote in quotesById:
             print([quote.quote for quote in list(completeQuote.quotes.values())[0]])
             print("###\n")
-        return quotesById
-    else:
-        return quotesById
+    return quotesById
+

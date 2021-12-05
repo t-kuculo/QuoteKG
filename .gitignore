@@ -38,3 +38,5 @@ test/
 /__pycache__
 corpus_current/
 /corpus_current
+/corpus_
+corpus_/
