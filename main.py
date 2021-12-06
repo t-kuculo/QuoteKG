@@ -8,10 +8,21 @@ from model.complete_quote import *
 from model.utils import *
 from itertools import * 
 from pathlib import Path
-from sentence_transformers import SentenceTransformer
+from sentence_transformers import SentenceTransformer, models
 from scipy.spatial import distance
 from model.fast_clustering import community_detection
 model = SentenceTransformer('paraphrase-xlm-r-multilingual-v1', device='cuda')
+#model = models.Transformer('sentence-transformers/paraphrase-xlm-r-multilingual-v1')#, device='cuda')
+#from transformers import AutoTokenizer, AutoModel
+#tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
+#model = AutoModel.from_pretrained('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
+
+def mean_pooling(model_output, attention_mask):
+    token_embeddings = model_output[0] #First element of model_output contains all token embeddings
+    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
+    return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
+
+
 #model.max_seq_length = 512
 import json
 import gc
@@ -225,24 +236,32 @@ def getEmbs(completeEntity):
         if len(all)>2000:
             #changed order of d1/d2
             d1 = texts[:len(texts)//2]
-            d2 = texts[len(texts)//2:]                                 
+            d2 = texts[len(texts)//2:]               
+            # Tokenize sentences
+            #encoded_input1 = tokenizer(d1, padding=True, truncation=True, return_tensors='pt')
+            #encoded_input2 = tokenizer(d2, padding=True, truncation=True, return_tensors='pt')
+            # Compute token embeddings
+            #with torch.no_grad():
+                #model_output = model(**encoded_input1)
+            # Perform pooling. In this case, max pooling.
+            #e1 = mean_pooling(model_output, encoded_input1['attention_mask'])    
+            #e2 = mean_pooling(model_output, encoded_input2['attention_mask'])                          
             e1 = model.encode(d1)
             e2 = model.encode(d2)
             values = numpy.concatenate((e1,e2))
         else:
+            #encoded_input = tokenizer(texts, padding=True, truncation=True, return_tensors='pt')
+            #with torch.no_grad():
+                #model_output = model(**encoded_input)
+            #values =  mean_pooling(model_output, encoded_input['attention_mask']) 
             values = model.encode(texts)
 
     for quote_id, embedding in zip(all, values):
         for language in completeEntity.entities:
-            completeEntity.entities[language][0].quotes[quote_id] = embedding
-        """
-        n=0
-        for language in completeEntity.entities:
-            #for quote in list(completeEntity.entities[language][0].quotes.values()):
-            for quote_id, value in zip(completeEntity.entities[language][0].quotes, values[n:]):
-                completeEntity.entities[language][0].quotes[quote_id].embedding = value
-                n+=1
-        """
+            if quote_id not in completeEntity.entities[language][0].quotes:
+                continue
+            completeEntity.entities[language][0].quotes[quote_id].embedding = embedding
+
     return completeEntity
 
 
@@ -284,7 +303,7 @@ def X(intermediate_done=False):
                             d[filename].update({language:[]})
                             d[filename][language].append(new)
     else:
-        for (s,e) in [(25000,30000),(50000,55000),(75000, 80000), (0, 100000), (0, 100000)]:
+        for (s,e) in [(0,5000),(25000,30000),(50000,55000),(75000, 80000)]:
             subdirs = [x[0] for x in os.walk("/home/kuculo/quotekg/intermediate/")][1:] 
             for i, subdir in enumerate(subdirs):
                 language = subdir.split("/")[-1]
@@ -309,8 +328,8 @@ def X(intermediate_done=False):
                 print("%d of %d complete"%(i, len(od))) 
                 path = "/home/kuculo/quotekg/v2_final/"+filename
                 path = Path(path)
-                if path.exists():
-                    continue
+                #if path.exists():
+                    #continue
                 print(filename)
                 with open("/home/kuculo/quotekg/v2_final/"+filename,"wb") as f:
                     new = CompleteEntity(filename[:-4], od[filename])

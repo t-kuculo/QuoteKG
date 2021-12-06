@@ -30,7 +30,7 @@ def community_detection(embeddings, threshold=0.75, min_community_size=1, init_m
     Returns only communities that are larger than min_community_size. The communities are returned
     in decreasing order. The first element in each list is the central point in the community.
     """
-
+    # embeddings = [t.numpy() for t in embeddings] # added 6.12.2021
     # Compute cosine similarity scores
     cos_scores = util.pytorch_cos_sim(embeddings, embeddings)
 

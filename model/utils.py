@@ -16,7 +16,6 @@ from scipy.spatial import distance
 from model.fast_clustering import community_detection
 import numpy
 import gc
-model = SentenceTransformer('paraphrase-xlm-r-multilingual-v1', device='cuda')
 
 
 def recluster():

@@ -234,7 +234,9 @@ def getEmbs(completeEntity):
 
     for quote_id, embedding in zip(all, values):
         for language in completeEntity.entities:
-            completeEntity.entities[language][0].quotes[quote_id] = embedding
+            if quote_id not in completeEntity.entities[language][0].quotes:
+                continue
+            completeEntity.entities[language][0].quotes[quote_id].embedding = embedding
         """
         n=0
         for language in completeEntity.entities:
@@ -307,8 +309,8 @@ def X(intermediate_done=False):
                 print("%d of %d complete"%(i, len(od))) 
                 path = "/home/kuculo/quotekg/v2_final/"+filename
                 path = Path(path)
-                if path.exists():
-                    continue
+                #if path.exists():
+                    #continue
                 print(filename)
                 with open("/home/kuculo/quotekg/v2_final/"+filename,"wb") as f:
                     new = CompleteEntity(filename[:-4], od[filename])
