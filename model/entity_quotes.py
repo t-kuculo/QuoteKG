@@ -220,7 +220,7 @@ class EntityWithQuotes:
         self.lang=language
         self.entity = entity
         self.wikiquote_id = entity.wikiquote_id
-        self.wikiquote_page_id = entity.wikiquotePageId
+        self.wikiquote_page_id = entity.wikiquote_page_id
         self.wikidata_id = entity.wikidata_id
         self.wikipedia_id = entity.wikipedia_id
         self.types = []

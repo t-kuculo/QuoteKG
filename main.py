@@ -12,17 +12,6 @@ from sentence_transformers import SentenceTransformer, models
 from scipy.spatial import distance
 from model.fast_clustering import community_detection
 model = SentenceTransformer('paraphrase-xlm-r-multilingual-v1', device='cuda')
-#model = models.Transformer('sentence-transformers/paraphrase-xlm-r-multilingual-v1')#, device='cuda')
-#from transformers import AutoTokenizer, AutoModel
-#tokenizer = AutoTokenizer.from_pretrained('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
-#model = AutoModel.from_pretrained('sentence-transformers/paraphrase-xlm-r-multilingual-v1')
-
-def mean_pooling(model_output, attention_mask):
-    token_embeddings = model_output[0] #First element of model_output contains all token embeddings
-    input_mask_expanded = attention_mask.unsqueeze(-1).expand(token_embeddings.size()).float()
-    return torch.sum(token_embeddings * input_mask_expanded, 1) / torch.clamp(input_mask_expanded.sum(1), min=1e-9)
-
-
 #model.max_seq_length = 512
 import json
 import gc
@@ -339,6 +328,7 @@ def X(intermediate_done=False):
 
 
 if __name__ == "__main__":
+    sim = 0.8
     X(intermediate_done=True)
     entity_dir = "/home/kuculo/quotekg/v2_final/"
     #subdirs = [x[0] for x in os.walk(entity_dir)][1:]  
@@ -371,7 +361,8 @@ if __name__ == "__main__":
             indices = new_indices
             cluster(all, indices, completeEntity, path="/home/kuculo/quotekg/CompleteQuotes/"+str(sim))
             print("%d of %d finished clustering"%(z,len(files)))
-    
+    """
+    """
     #give_context()
     print("Starting better dates")
     give_better_dates_to_completeQuotes(sim, quote_dir = "/home/kuculo/quotekg/CompleteQuotes/"+str(sim))

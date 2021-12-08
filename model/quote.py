@@ -125,7 +125,7 @@ attrDict = {
     "simple" : "quote",
     "ციტატა" : "quote",
     "original": "original","citation": "translation","précisions": "comment","langue": "language","date":"date","parution":"release","source":"source",
-    "original":"quote", "Original":"quote","Quote":"quote","text":"quote",
+    "Quote":"quote","text":"quote",
 
     "1":"quote", # Make it work when there are more numbers!!
     "2":"quote",
@@ -314,7 +314,10 @@ class templatedQuote():
         self.id = args[0]+"_t_"+args[2]+"_"+str(args[1])
         for key in kwargs:
             if key.lower() in attrDict:
-                setattr(self, attrDict[key.lower()], kwargs[key])
+                if hasattr(kwargs[key], "text"):
+                    setattr(self, attrDict[key.lower()], kwargs[key].text)
+                else:
+                    setattr(self, attrDict[key.lower()], kwargs[key])
         try:
             self.quote = self.quote.text
             self.quote = cleanText(self.quote, isQuote=True)
@@ -370,16 +373,16 @@ class templatedQuote():
                 if self.translation:
                     self.okay = True
                     if isinstance(self.translation, str):
-                        if len(self.quote) > 5:
-                            self.sentiment = sentiment_task(self.quote[:514])
+                        if len(self.translation) > 5:
+                            self.sentiment = sentiment_task(self.translation[:514])
 
             except AttributeError:
                 try:
                     if self.original: 
                         self.okay = True
                         if isinstance(self.original, str):
-                            if len(self.quote) > 5:
-                                self.sentiment = sentiment_task(self.quote[:514])
+                            if len(self.original) > 5:
+                                self.sentiment = sentiment_task(self.original[:514])
 
                 except AttributeError:          
                     self.okay=False

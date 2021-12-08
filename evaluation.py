@@ -88,7 +88,7 @@ for completeQuote in corpus.completeQuotes.values():
     quote_texts = set()
     if "en" in completeQuote.quotes.keys() or "de" in completeQuote.quotes.keys() or "it" in completeQuote.quotes.keys():
         print("###")
-        if len(completeQuote.quotes.keys() > 1):
+        if len(completeQuote.quotes.keys()) > 1:
             for lang, quotes in completeQuote.quotes.items():
                 for quote in quotes:
                     print(lang,quote)

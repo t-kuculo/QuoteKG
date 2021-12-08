@@ -321,7 +321,7 @@ def give_better_dates_to_completeQuotes(threshold, quote_dir="/home/kuculo/quote
                 with open(subdir+"/"+filename,"rb") as f:
                     completeQuote = pickle.load(f)
                     completeQuote.dates, completeQuote.quotes = getDates(completeQuote)
-                    completeQuote.entity = None
+                    #completeQuote.entity = None
                 new_quote_dir = "/home/kuculo/quotekg/CompleteQuotes2/0.8"
                 new_path = new_quote_dir+"/"+subdir.split("/")[-1]
                 if not os.path.isdir(new_path):

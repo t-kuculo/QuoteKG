@@ -18,7 +18,7 @@ class Corpus:
                 quotesById.append(self.completeQuotes[quote_id])
         if printout:
             for completeQuote in quotesById:
-                for quote in list(completeQuote.quotes.values())[0]:
+                for quote in list(completeQuote.quotes.values()):
                     if hasattr(quote, "quote"):
                         print(quote.quote)
                     elif hasattr(quote, "translation"):
@@ -35,7 +35,7 @@ def lookUp(c, wd_id, printout=False):
             quotesById.append(c.completeQuotes[quote_id])
     if printout:
         for completeQuote in quotesById:
-            for quote in list(completeQuote.quotes.values())[0]:
+            for quote in list(completeQuote.quotes.values()):
                 if hasattr(quote, "quote"):
                     print(quote.quote)
                 elif hasattr(quote, "translation"):
