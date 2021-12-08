@@ -251,7 +251,7 @@ def X(intermediate_done=False):
     d ={}
     dir = "/home/kuculo/quotekg/v1_final"
     subdirs = [x[0] for x in os.walk(dir)][1:] 
-    subdirs = ["/home/kuculo/quotekg/v1_final/it", "/home/kuculo/quotekg/v1_final/en"]
+    subdirs = ["/home/kuculo/quotekg/v1_final/fr", "/home/kuculo/quotekg/v1_final/ru","/home/kuculo/quotekg/v1_final/es","/home/kuculo/quotekg/v1_final/fa","/home/kuculo/quotekg/v1_final/bg"]
     print("v2:")  
     if not os.path.isdir("/home/kuculo/quotekg/v2_final"):
         os.mkdir("/home/kuculo/quotekg/v2_final")                                                                          
@@ -262,8 +262,6 @@ def X(intermediate_done=False):
             language= subdir.split("/")[-1]
             new_dir="/home/kuculo/quotekg/v2_final/"+language
             if os.path.isdir(new_dir):
-                continue
-            else:
                 os.mkdir(new_dir)
             for root,dirs,files in os.walk(subdir):
                 for j, filename in enumerate(files):
@@ -319,7 +317,7 @@ def X(intermediate_done=False):
         
 
 if __name__ == "__main__":
-    X(intermediate_done=True)
+    X(intermediate_done=False)
     while(True):
         print("embedding completed")
     entity_dir = "/home/kuculo/quotekg/v2_final/"

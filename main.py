@@ -268,10 +268,8 @@ def X(intermediate_done=False):
             print("%d of %d complete"%(i, len(subdirs)))  
             language= subdir.split("/")[-1]
             new_dir="/home/kuculo/quotekg/v2_final/"+language
-            if os.path.isdir(new_dir):
-                continue
-            else:
-                os.mkdir(new_dir)
+            if not os.path.isdir(new_dir):
+                os.mkdir(new_dir)                
             for root,dirs,files in os.walk(subdir):
                 for j, filename in enumerate(files):
                     if j%100==0:
@@ -329,7 +327,8 @@ def X(intermediate_done=False):
 
 if __name__ == "__main__":
     sim = 0.8
-    X(intermediate_done=True)
+    X(intermediate_done=False)
+    """
     entity_dir = "/home/kuculo/quotekg/v2_final/"
     #subdirs = [x[0] for x in os.walk(entity_dir)][1:]  
     sim = 0.8
@@ -371,5 +370,6 @@ if __name__ == "__main__":
     print("Creating umbrella corpus")
     convert_to_umbrella_corpus()
     #recluster()
+    """
 
 
