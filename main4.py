@@ -11,7 +11,7 @@ from pathlib import Path
 from sentence_transformers import SentenceTransformer
 from scipy.spatial import distance
 from model.fast_clustering import community_detection
-model = SentenceTransformer('paraphrase-xlm-r-multilingual-v1', device='cuda')
+#model = SentenceTransformer('paraphrase-xlm-r-multilingual-v1', device='cuda')
 #model.max_seq_length = 512
 import json
 import gc
@@ -265,8 +265,7 @@ def X(intermediate_done=False):
                 os.mkdir(new_dir)
             for root,dirs,files in os.walk(subdir):
                 for j, filename in enumerate(files):
-                    if j%100==0:
-                        print("%d file out of %d"%(j, len(files)))
+                    print("%d file out of %d"%(j, len(files)))
                     if "counter" in filename:
                         continue
                     with open(subdir+"/"+filename,"rb") as f:
@@ -277,11 +276,11 @@ def X(intermediate_done=False):
                             os.mkdir("/home/kuculo/quotekg/intermediate/"+ language)
                         with open("/home/kuculo/quotekg/intermediate/"+ language+"/"+filename,"wb") as g:
                             pickle.dump(new, g)
-                        if filename not in d:
-                            d[filename] = {}
-                        if language not in d[filename]:
-                            d[filename].update({language:[]})
-                            d[filename][language].append(new)
+                        #if filename not in d:
+                            #d[filename] = {}
+                        #if language not in d[filename]:
+                            #d[filename].update({language:[]})
+                            #d[filename][language].append(new)
     else:
         for (s,e) in [(15000,20000),(40000,45000),(65000,70000)]:
             subdirs = [x[0] for x in os.walk("/home/kuculo/quotekg/intermediate/")][1:] 

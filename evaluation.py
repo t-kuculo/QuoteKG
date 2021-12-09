@@ -9,8 +9,9 @@ from itertools import *
 our_languages = ["en", "it", "de"]
 our_languages.reverse()
 
-folder = "data/ground_truth"
-corpus_filename = "corpus/corpus_v2.pkl"
+folder = "/home/kuculo/quotekg/data/ground_truth"
+folder = "/home/kuculo/quotekg/data/gt"
+corpus_filename = "corpus/last.pkl"
 
 ground_truth = dict()
 clusters = dict()
@@ -91,7 +92,10 @@ for completeQuote in corpus.completeQuotes.values():
         if len(completeQuote.quotes.keys()) > 1:
             for lang, quotes in completeQuote.quotes.items():
                 for quote in quotes:
-                    print(lang,quote)
+                    if hasattr(quote, "quote"):
+                        print(lang,quote.quote)
+                    else:
+                        print(lang, quote.translation.text)
             print("###")
     for lang, quotes in completeQuote.quotes.items():
         
@@ -99,8 +103,10 @@ for completeQuote in corpus.completeQuotes.values():
 
             if lang not in our_languages:
                 continue
-
-            quote_text = lang + ": " + quote.quote
+            if hasattr(quote, "quote"):
+                quote_text = lang + ": " + quote.quote
+            else:
+                quote_text = lang + ": " + quote.translation.text
             quote_text = quote_text.replace("\n", "")
 
             if quote_text in ground_truth[wikidata_id]["all"]:

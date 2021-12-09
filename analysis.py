@@ -210,6 +210,7 @@ def mean_pooling(model_output, attention_mask):
 
 
 """
+"""
 x = "/home/kuculo/quotekg/v1_final/"
 print("e_quotes being created")
 import os
@@ -233,6 +234,10 @@ einstein = e_quotes["Q937.pkl"]
 x=[]
 for i, e in enumerate(einstein):
     x.append(EntityWithQuotes(e, str(i), "fr"))
+
+
+
+
 
 """
 def create_ground_truth(quotes, languages = ["en","it","de"]):
@@ -260,7 +265,7 @@ def create_ground_truth(quotes, languages = ["en","it","de"]):
             if fields:
                 writer.writerow(fields)
 
-with open("/home/kuculo/quotekg/corpus/corpus_v2.pkl","rb") as f:
+with open("/home/kuculo/quotekg/corpus/last.pkl","rb") as f:
     c = pickle.load(f)
 
 ground_truth_entities = {"Q105167": "Tom Clancy", "Q57661": "Jean-Claude Juncker", "Q13424289": "Edward Snowden",
@@ -275,4 +280,3 @@ for Person in ground_truth_entities:
 
 #lookUp(c, "Q13424289", True)
 #print("\n\n#######")
-"""
