@@ -242,13 +242,23 @@ for i, e in enumerate(einstein):
 """
 def create_ground_truth(quotes, languages = ["en","it","de"]):
     filename = quotes[0].entity.wikidata_id
+    count = 0
+    tp = 0
     with open("/home/kuculo/quotekg/data/gt/"+filename +".tsv", "w", newline ="\n") as f:
         writer = csv.writer(f, delimiter="\t")
         for X in quotes:
             fields = []
+            j = -1
             for quote in list(X.quotes.values()):
                 quote = quote[0]
                 if quote.page_language in languages:
+                    if j==-1:
+                        j+=1
+                    if j==0:
+                        j+=1
+                    if j==1:
+                        j+=2
+                    count += 1
                     if hasattr(quote, "quote"):
                         #f.write(quote.page_language +": "+ quote.quote + "\t")
                         fields.append(quote.page_language+": "+quote.quote)
@@ -261,10 +271,13 @@ def create_ground_truth(quotes, languages = ["en","it","de"]):
                         #f.write(quote.page_language +": "+ quote.original.text  + "\t")
                         fields.append(quote.page_language+": "+quote.original.text)
                         print(quote.original.text)
+                if j>0:
+                    tp+=j
             print("##")
             if fields:
                 writer.writerow(fields)
-
+    print(["tp: ", str(tp)])
+    print("Count ", count)
 with open("/home/kuculo/quotekg/corpus/last.pkl","rb") as f:
     c = pickle.load(f)
 

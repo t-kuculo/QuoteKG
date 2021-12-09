@@ -591,36 +591,36 @@ R 1.0
 Tom Clancy & 1 & 2700 & 0 & 0 & 1 & 1.0 & 1.0
 
 wikidata_id: Q8409
-Ground truth, tps: 6
-Ground truth, tns: 319
+Ground truth, tps: 5
+Ground truth, tns: 271
 Clustered: 5
-Unclustered: 320
-tps+tns: 325
-clustered+unclustered: 325
+Unclustered: 271
+tps+tns: 276
+clustered+unclustered: 276
 TP: 5
-TN: 319
-FP: 0
-FN: 1
-Sum 325
-P 1
-R 0.8333333333333334
-Alexander the Great & 5 & 319 & 0 & 1 & 1 & 0.8333333333333334 & 0.9090909090909091
-
-wikidata_id: Q13424289
-Ground truth, tps: 4
-Ground truth, tns: 626
-Clustered: 4
-Unclustered: 626
-tps+tns: 630
-clustered+unclustered: 630
-TP: 4
-TN: 626
+TN: 271
 FP: 0
 FN: 0
-Sum 630
+Sum 276
 P 1
 R 1.0
-Edward Snowden & 4 & 626 & 0 & 0 & 1 & 1.0 & 1.0
+Alexander the Great & 5 & 271 & 0 & 0 & 1 & 1.0 & 1.0
+
+wikidata_id: Q13424289
+Ground truth, tps: 3
+Ground truth, tns: 592
+Clustered: 3
+Unclustered: 592
+tps+tns: 595
+clustered+unclustered: 595
+TP: 3
+TN: 592
+FP: 0
+FN: 0
+Sum 595
+P 1
+R 1.0
+Edward Snowden & 3 & 592 & 0 & 0 & 1 & 1.0 & 1.0
 
 wikidata_id: Q7186
 Ground truth, tps: 2
@@ -686,11 +686,11 @@ P 1
 R 1.0
 Gustav Mahler & 1 & 35 & 0 & 0 & 1 & 1.0 & 1.0
 
-Average F score:  0.979020979020979
+Average F score:  0.9903846153846154
 Average precision:  1.0
-Average recall:  0.9613095238095238
-TP, total:  27
-TN, total:  5674
+Average recall:  0.9821428571428572
+TP, total:  26
+TN, total:  5592
 FP, total:  0
-FN, total:  2
-27 & 5674 & 0 & 2 & 1.0 & 0.9613095238095238 & 0.979020979020979
+FN, total:  1
+26 & 5592 & 0 & 1 & 1.0 & 0.9821428571428572 & 0.9903846153846154

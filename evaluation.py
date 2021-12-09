@@ -10,7 +10,6 @@ our_languages = ["en", "it", "de"]
 our_languages.reverse()
 
 folder = "/home/kuculo/quotekg/data/ground_truth"
-folder = "/home/kuculo/quotekg/data/gt"
 corpus_filename = "corpus/last.pkl"
 
 ground_truth = dict()
@@ -94,8 +93,10 @@ for completeQuote in corpus.completeQuotes.values():
                 for quote in quotes:
                     if hasattr(quote, "quote"):
                         print(lang,quote.quote)
-                    else:
+                    elif hasattr(quote, "translation"):
                         print(lang, quote.translation.text)
+                    else:
+                        print(lang, quote.original.text)
             print("###")
     for lang, quotes in completeQuote.quotes.items():
         
@@ -105,8 +106,10 @@ for completeQuote in corpus.completeQuotes.values():
                 continue
             if hasattr(quote, "quote"):
                 quote_text = lang + ": " + quote.quote
-            else:
+            elif hasattr(quote, "translation"):
                 quote_text = lang + ": " + quote.translation.text
+            else:
+                quote_text = lang  + ": " + quote.translation.text
             quote_text = quote_text.replace("\n", "")
 
             if quote_text in ground_truth[wikidata_id]["all"]:
