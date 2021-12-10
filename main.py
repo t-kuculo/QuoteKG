@@ -279,15 +279,13 @@ def X(intermediate_done=False):
                         entity=pickle.load(f)
                         id = filename[:-4]
                         new = EntityWithQuotes(entity,id,language)
+                        if not os.path.isdir("/home/kuculo/quotekg/intermediate/"):      
+                            os.mkdir("/home/kuculo/quotekg/intermediate/")
                         if not os.path.isdir("/home/kuculo/quotekg/intermediate/"+ language):      
                             os.mkdir("/home/kuculo/quotekg/intermediate/"+ language)
                         with open("/home/kuculo/quotekg/intermediate/"+ language+"/"+filename,"wb") as g:
                             pickle.dump(new, g)
-                        #if filename not in d:
-                            #d[filename] = {}
-                        #if language not in d[filename]:
-                            #d[filename].update({language:[]})
-                            #d[filename][language].append(new)
+
     else:
         for (s,e) in [(0,5000),(25000,30000),(50000,55000),(75000, 80000)]:
             subdirs = [x[0] for x in os.walk("/home/kuculo/quotekg/intermediate/")][1:] 
@@ -327,7 +325,7 @@ def X(intermediate_done=False):
 if __name__ == "__main__":
     sim = 0.8
     X(intermediate_done=False)
-    """
+    X(intermediate_done = True)
     entity_dir = "/home/kuculo/quotekg/v2_final/"
     #subdirs = [x[0] for x in os.walk(entity_dir)][1:]  
     sim = 0.8
@@ -369,6 +367,6 @@ if __name__ == "__main__":
     print("Creating umbrella corpus")
     convert_to_umbrella_corpus()
     #recluster()
-    """
+    
 
 
