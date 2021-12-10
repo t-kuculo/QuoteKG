@@ -11,7 +11,7 @@ our_languages = ["en", "it", "de"]
 our_languages.reverse()
 
 folder = "data/ground_truth"
-corpus_filename = "corpus.pkl"
+corpus_filename = "corpus_evaluation_subset.pkl"
 
 ground_truth = dict()
 clusters = dict()
@@ -200,12 +200,20 @@ for wikidata_id in ground_truth.keys():
     tn_total += tn
 
     fp = len(clustered.difference(tps))
+
+    for cluster in clustered.difference(tps):
+        print("FP:",cluster)
+
+
     print("FP:", fp)
     fp_total += fp
 
     fn = len(unclustered.difference(tns))
     print("FN:", fn)
     fn_total += fn
+
+    for cluster in unclustered.difference(tns):
+        print("FN:",cluster)
 
     print("Sum", tp + fp + tn + fn)
 
