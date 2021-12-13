@@ -10,6 +10,7 @@ from itertools import *
 from pathlib import Path
 from sentence_transformers import SentenceTransformer, models
 from scipy.spatial import distance
+import settings
 from model.fast_clustering import community_detection
 import multiprocessing
 import math
