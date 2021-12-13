@@ -1,6 +1,7 @@
+import copy
 import pickle
 
-from networkx.algorithms.centrality.current_flow_betweenness import edge_current_flow_betweenness_centrality
+# from n^etworkx.algorithms.centrality.current_flow_betweenness import edge_current_flow_betweenness_centrality
 from model.entity_quotes import *
 from model.complete_quote import *
 from model.utils import *
@@ -13,11 +14,12 @@ ground_truth_path = config.get("Paths","ground_truth_path")
 our_languages = ["en", "it", "de"]
 our_languages.reverse()
 
-folder = ground_truth_path
-corpus_filename = "corpus/last.pkl"
+folder = "data/ground_truth"
+corpus_filename = "corpus_evaluation_subset.pkl"
 
 ground_truth = dict()
 clusters = dict()
+create_subcorpus = False
 
 ground_truth_entities = {"Q105167": "Tom Clancy", "Q57661": "Jean-Claude Juncker", "Q13424289": "Edward Snowden",
                          "Q7251": "Alan Turing", "Q47365": "Marie Antoinette", "Q7304": "Gustav Mahler",
@@ -25,6 +27,7 @@ ground_truth_entities = {"Q105167": "Tom Clancy", "Q57661": "Jean-Claude Juncker
 
 # collect pairs of aligned and pairs of unaligned quotations from ground truth
 for filename in os.listdir(folder):
+
     if filename.endswith(".tsv"):
         wikidata_id = filename.replace(".tsv", "")
         print("Wikidata ID", wikidata_id)
@@ -75,19 +78,28 @@ for filename in os.listdir(folder):
                     if pair not in ground_truth_tps:
                         ground_truth_tns.add(pair)
 
+        for tp in ground_truth[wikidata_id]["tps"]:
+            print("---")
+            for quote in tp:
+                print(quote)
+
 print("Load corpus", flush=True)
 with open(corpus_filename, "rb") as f:
     corpus = pickle.load(f)
+print("Corpus loaded.", flush=True)
+
+completeQuotesInGT = dict()
 
 # load quotation clusters from our data
 for completeQuote in corpus.completeQuotes.values():
 
-    #completeEntity = completeQuote.entity
+    # completeEntity = completeQuote.entity
 
-    #wikidata_id = completeEntity.wikidata_id
+    # wikidata_id = completeEntity.wikidata_id
     wikidata_id = completeQuote.id.split("_")[0]
     if wikidata_id not in ground_truth.keys():
         continue
+    completeQuotesInGT.update({completeQuote.id: completeQuote})
 
     quote_texts = set()
     if "en" in completeQuote.quotes.keys() or "de" in completeQuote.quotes.keys() or "it" in completeQuote.quotes.keys():
@@ -103,7 +115,7 @@ for completeQuote in corpus.completeQuotes.values():
                         print(lang, quote.original.text)
             print("###")
     for lang, quotes in completeQuote.quotes.items():
-        
+
         for quote in quotes:
 
             if lang not in our_languages:
@@ -121,9 +133,9 @@ for completeQuote in corpus.completeQuotes.values():
                     clusters[wikidata_id]["all"].add(quote_text)
 
                 quote_texts.add(quote_text)
-            #else:
-                #print("$$$")
-                #print(quote_text)
+            else:
+            #print("$$$")
+                print("(", wikidata_id, ") Missing in ground truth:", quote_text)
 
     for text1 in quote_texts:
         for text2 in quote_texts:
@@ -131,6 +143,11 @@ for completeQuote in corpus.completeQuotes.values():
                 continue
             pair = frozenset((text1, text2))
             clusters[wikidata_id]["clustered"].add(pair)
+
+if create_subcorpus:
+    corpus.completeQuotes = completeQuotesInGT
+    with open("corpus_evaluation_subset.pkl", "wb") as f:
+        pickle.dump(corpus, f)
 
 # collect pairs of quotations that are not within the same cluster
 for wikidata_id in clusters.keys():
@@ -145,6 +162,9 @@ for wikidata_id in clusters.keys():
 for wikidata_id in ground_truth.keys():
     for text in ground_truth[wikidata_id]["all"]:
         if text not in clusters[wikidata_id]["all"]:
+
+            print("(", wikidata_id, ") Missing in corpus:", text)
+
             pairs_to_remove = set()
             for pair in ground_truth[wikidata_id]["tps"]:
                 if text in pair:
@@ -193,12 +213,20 @@ for wikidata_id in ground_truth.keys():
     tn_total += tn
 
     fp = len(clustered.difference(tps))
+
+    for cluster in clustered.difference(tps):
+        print("FP:",cluster)
+
+
     print("FP:", fp)
     fp_total += fp
 
     fn = len(unclustered.difference(tns))
     print("FN:", fn)
     fn_total += fn
+
+    for cluster in unclustered.difference(tns):
+        print("FN:",cluster)
 
     print("Sum", tp + fp + tn + fn)
 
