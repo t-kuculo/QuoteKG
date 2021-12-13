@@ -5,7 +5,12 @@ import os
 from model import *
 from sentence_transformers import SentenceTransformer
 from scipy.spatial import distance
-model = SentenceTransformer('LaBSE')
+import configparser
+config = configparser.ConfigParser()
+config.read("config.ini")
+unprocessed_files_path = config.get("Paths","unprocessed_files_path")
+processed_files_path = config.get("Paths","processed_files_path")
+#model = SentenceTransformer('LaBSE')
 
 def isEnglish(s):
     try:
@@ -135,7 +140,7 @@ def parseEntity(json_entity_obj):
     return entity
 
 if __name__ == '__main__':
-    target_parent_folder= "/home/kuculo/quotekg/v1_final"
+    target_parent_folder= processed_files_path
     os.mkdir(target_parent_folder)
     for i, filename in enumerate(os.listdir("jsons")): 
         print("%d file of %d"%(i, len(os.listdir("jsons"))))

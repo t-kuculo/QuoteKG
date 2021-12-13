@@ -1,8 +1,7 @@
 import re
-from transformers import pipeline
-model_path = "cardiffnlp/twitter-xlm-roberta-base-sentiment"
-sentiment_task = pipeline("sentiment-analysis", model=model_path, tokenizer=model_path)
-
+import main
+import settings
+import time
 
 pattern_brackets = re.compile(r'\[[^\]]*\]') # https://stackoverflow.com/questions/640001/how-can-i-remove-text-within-parentheses-with-a-regex
 pattern_brackets2 = re.compile(r'\([^\)]*\)')
@@ -229,6 +228,7 @@ class untemplatedQuote:
             for sub_line in line.sub_lines:
                 if isinstance(sub_line,Line):
                     self.contexts.append(Context(sub_line))
+
         self.footnotes = [s.text if isinstance(s,Line) else s for s in line.footnotes]
         self.external_links = line.external_links
         self.segment_embeddings=[]
@@ -254,7 +254,6 @@ class untemplatedQuote:
             if self.quote:
                 if len(self.quote) < 6 or any([char for char in self.quote if char in forbidden_non_alphanumerics_for_quotes]):
                      self.quote=None
-        
         if self.quote:
             try:
                 self.language=detect(self.quote)
@@ -267,7 +266,6 @@ class untemplatedQuote:
             self.okay = False
         self.misattributed = False
         self.about = False
-
         if self.language:
             if isinstance(self.language,Line):
                 self.language = self.language.text
@@ -278,19 +276,10 @@ class untemplatedQuote:
                     self.about = True
             if title.lower() in misattributed:
                 self.misattributed = True
-
-
-        #if self.quote_segments:
-            #self.segment_embeddings = [model.encode(segment, device='cuda') for segment in self.quote_segments]
-        #else:
-            #self.embedding = model.encode(self.quote, device='cuda')
-        #self.language = (translator.detect(self.quote).lang, translator.detect(self.quote).confidence)
-        #translation = translator.translate(self.quote)
-        #self.sentiment = sia.polarity_scores(translation.text)
         if isinstance(self.quote, str):
             if len(self.quote) > 5:
-                self.sentiment = sentiment_task(self.quote[:514])
-        
+                self.sentiment = settings.sentiment_task(self.quote[:514])
+
     def __bool__(self):
         return self.okay and not self.about
 
@@ -372,7 +361,7 @@ class templatedQuote():
             try:
                 if self.translation:
                     self.okay = True
-                    if isinstance(self.translation, str):
+                    if isinstance(self.quote, str): # fix: self.translation
                         if len(self.translation) > 5:
                             self.sentiment = sentiment_task(self.translation[:514])
 
@@ -380,7 +369,7 @@ class templatedQuote():
                 try:
                     if self.original: 
                         self.okay = True
-                        if isinstance(self.original, str):
+                        if isinstance(self.quote, str): # fix: self.translation
                             if len(self.original) > 5:
                                 self.sentiment = sentiment_task(self.original[:514])
 

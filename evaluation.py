@@ -5,11 +5,15 @@ from model.entity_quotes import *
 from model.complete_quote import *
 from model.utils import *
 from itertools import *
+import configparser
+config = configparser.ConfigParser()
+config.read("config.ini")
+ground_truth_path = config.get("Paths","ground_truth_path")
 
 our_languages = ["en", "it", "de"]
 our_languages.reverse()
 
-folder = "/home/kuculo/quotekg/data/ground_truth"
+folder = ground_truth_path
 corpus_filename = "corpus/last.pkl"
 
 ground_truth = dict()
