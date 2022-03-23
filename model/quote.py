@@ -1,5 +1,5 @@
 import re
-import main
+import old.main1 as main1
 import settings
 import time
 
@@ -177,7 +177,7 @@ def isDate(text):
             date = (t.date_obj.year, t.date_obj.month)
         elif period == "year":
             date = (t.date_obj.year)
-    if any(X):
+    if any(X) and date==None:
         date = isDate(" ".join(X[1:]))
     return date
 
