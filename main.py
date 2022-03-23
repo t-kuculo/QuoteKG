@@ -18,6 +18,8 @@ from transformers import pipeline
 import json
 import gc
 import json
+from mergedeep import merge
+from itertools import islice
 #model.max_seq_length = 512
 
 gc.collect()
@@ -157,24 +159,34 @@ def X(subdirs, files, intermediate_done=False):
                         if language not in d[filename]:
                             d[filename].update({language:[]})
                             d[filename][language].append(entity)
-        print("Creating CompleteEntities and embedding quotes")
-        #multiprocessing
-        od = collections.OrderedDict(sorted(d.items())[s:e])
-        d = {}
-        for i, filename in enumerate(od):
-            print("%d of %d complete"%(i, len(od))) 
-            path = entity_dir+filename
-            path = Path(path)
-            #if path.exists():
-                #continue
-            print(filename)
-            with open(entity_dir+filename,"wb") as f:
-                new = CompleteEntity(filename[:-4], od[filename])
-                new = getEmbs(new)
-                pickle.dump(new, f)
+
+    if not os.path.isdir("dictionaries"):
+        os.mkdir("dictionaries")
+
+    with open("dictionaries/d_"+str(e)+".json", "wb") as f:
+        pickle.dump(d, f)
+    d = {}
+
+
+
         
-
-
+def Y(od):
+    print("Creating CompleteEntities and embedding quotes")
+    #multiprocessing
+    for i, tup in enumerate(od):
+        filename = tup[0]
+        obj = tup[1]
+        print("%d of %d complete"%(i, len(od))) 
+        path = entity_dir+filename
+        a = len(od)
+        path = Path(path)
+        #if path.exists():
+            #continue
+        print(filename)
+        with open(entity_dir+filename,"wb") as f:
+            new = CompleteEntity(filename[:-4], obj)#od[filename])
+            new = getEmbs(new)
+            pickle.dump(new, f)
 
 if __name__ == "__main__":
     settings.init()
@@ -193,7 +205,7 @@ if __name__ == "__main__":
     # Loading language subdirectories from config file
     languages = ["L1","L2","L3","L4","L5"]
     all_subdirs = [[processed_files_path + language for language in json.loads(config.get("Defaults",L))] for L in languages]
-    # Partitioning work with multiprocessing
+    # Partitioning work for multiprocessing
     cpt = sum([len(files) for r, d, files in os.walk(quote_files_path)])
     partitions = math.ceil(cpt/5000)
     all_files = [(i*5000, (i+1)*5000) for i in range(partitions)]
@@ -201,6 +213,7 @@ if __name__ == "__main__":
     #for subdir in all_subdirs:
         #X(subdir, [], intermediate_done=False)
     """
+    threads = []
     for subdirs in all_subdirs:
         t = multiprocessing.Process(target=X,
         args=(
@@ -217,9 +230,9 @@ if __name__ == "__main__":
     threads = []
     'Q16512203.pkl'
     'Q562195.pkl'
-    """
     
-
+    
+    threads = []
     for files in all_files:
         t = multiprocessing.Process(target=X, 
         args=(
@@ -230,8 +243,53 @@ if __name__ == "__main__":
         threads.append(t)
         t.start()
     for t in threads:
-            t.join()
+        t.join()
     
+    d = {}
+    print("Merging dictionaries")
+    for root, dirs, files in os.walk("dictionaries"):
+        for file in files:
+            print(file)
+            with open("dictionaries/"+file,"rb") as f:
+                d = merge(d,(pickle.load(f)))
+
+    if not os.path.isdir("full_dict"):
+        os.mkdir("full_dict")
+        
+    with open("full_dict/full.json","wb") as f:
+        pickle.dump(d, f)
+    """
+    with open("full_dict/full.json","rb") as f:
+        d = pickle.load(f)
+    od = collections.OrderedDict(sorted(d.items()))
+    d = {}
+    print("Creating embeddings")
+    threads = []
+    # partioning work for multiprocessing
+    items = list(od.items())
+    od = {}
+    chunksize = 3000
+    all_chunks = [items[i:i + chunksize] for i in range(0, len(items), chunksize)]
+    per_iteration = math.ceil(len(all_chunks)/9)
+    for i in range(9):
+        chunks = all_chunks[i*per_iteration:(i+1)*per_iteration]
+        with multiprocessing.Pool() as pool:
+            res = pool.map(Y, chunks)
+
+    """
+    partitions = math.ceil(len(od.keys())/2500)
+    all_files = [(i*2500, (i+1)*2500) for i in range(partitions)]
+    for (s,e) in all_files:
+        keys = list(islice(od, s, e))
+        tmp_dct = {key: od[key] for key in keys}
+        t = multiprocessing.Process(target=Y, 
+        args=(tmp_dct,
+        ))
+        threads.append(t)
+        t.start()
+    for t in threads:
+        t.join()
+    """
     print("Embeddings created")
     
     # Clustering quotes
