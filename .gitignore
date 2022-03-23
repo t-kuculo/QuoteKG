@@ -19,6 +19,11 @@ jsons/
 jsons_0/
 /jsons_0
 test/
+full_dict/
+dictionaries/
+sameas-all-wikis.csv
+wikiquote_to_wikidata.tsv
+
 
 /intermediate
 /CompleteQuotes
@@ -40,3 +45,4 @@ corpus_current/
 /corpus_current
 /corpus_
 corpus_/
+/old_v2_final

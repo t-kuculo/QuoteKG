@@ -308,10 +308,13 @@ class templatedQuote():
                 else:
                     setattr(self, attrDict[key.lower()], kwargs[key])
         try:
-            self.quote = self.quote.text
-            self.quote = cleanText(self.quote, isQuote=True)
+            if isinstance(self.quote, str):
+                if len(self.quote) > 5:
+                    self.sentiment = settings.sentiment_task(self.quote[:514])
+            else:
+                self.quote = self.quote.text
+                self.quote = cleanText(self.quote, isQuote=True)
             if self.quote:
-                
                 if len(self.quote) < 6 or any([char for char in self.quote if char in forbidden_non_alphanumerics_for_quotes]):
                     self.quote = None
                     self.okay = False
@@ -327,16 +330,10 @@ class templatedQuote():
             else:
                 self.okay = False
                 
-            self.embedding = None #model.encode(self.quote, device='cuda')
+            self.embedding = None 
             #if not self.date:
                 #self.date=getDate(self.section_titles)
-            #sia = SentimentIntensityAnalyzer()
-            #self.language = (translator.detect(self.quote).lang, translator.detect(self.quote).confidence)
-            #translation = translator.translate(self.quote)
-            #self.sentiment = sia.polarity_scores(translation.text)
-            if isinstance(self.quote, str):
-                if len(self.quote) > 5:
-                    self.sentiment = sentiment_task(self.quote[:514])
+
             self.about = False
             self.misattributed = False
 
@@ -361,17 +358,17 @@ class templatedQuote():
             try:
                 if self.translation:
                     self.okay = True
-                    if isinstance(self.quote, str): # fix: self.translation
+                    if isinstance(self.translation, str): # fix: self.translation
                         if len(self.translation) > 5:
-                            self.sentiment = sentiment_task(self.translation[:514])
+                            self.sentiment = settings.sentiment_task(self.translation[:514])
 
             except AttributeError:
                 try:
                     if self.original: 
                         self.okay = True
-                        if isinstance(self.quote, str): # fix: self.translation
+                        if isinstance(self.original, str): # fix: self.original
                             if len(self.original) > 5:
-                                self.sentiment = sentiment_task(self.original[:514])
+                                self.sentiment = settings.sentiment_task(self.original[:514])
 
                 except AttributeError:          
                     self.okay=False
