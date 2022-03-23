@@ -605,13 +605,11 @@ for entity in entity_dict.values():
     for entity_type in entity.types:
         g.add((entity.uri, RDF.type, URIRef(DBO) + entity_type))
     g.add((entity.uri, OWL.sameAs, URIRef(WD) + entity.wikidata_id))
-    # for lang, wikiquotePageId in entity.wikiquotePageIds.items():
-    #    g.add((entity.uri, OWL.sameAs, wqCurid[lang] + str(wikiquotePageId)))
     for lang, wikiquoteId in entity.wikiquoteIds.items():
-        #g.add((entity.uri, OWL.sameAs, wq[lang] + requests.utils.quote(wikiquoteId)))
-        g.add((entity.uri, OWL.sameAs, URIRef(wq[lang] + wikiquoteId.replace(" ","_"))))
+        wikiquoteId_replaced = wikiquoteId.replace("\"", "%22" ).replace("\'", "%27" ).replace("`", "%60")
+        g.add((entity.uri, OWL.sameAs, URIRef(wq[lang] + wikiquoteId_replaced.replace(" ","_"))))
         g.add((entity.uri, RDFS.label, Literal(wikiquoteId, lang)))
-
+        
     dbpedia_labels = dict()
     if entity.wikidata_id in wikidata_to_dbpedia:
         for lang in wikidata_to_dbpedia[entity.wikidata_id]:
